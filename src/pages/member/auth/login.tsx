@@ -45,7 +45,7 @@ export default function MemberLogin() {
           path: "/",
           sameSite: "strict",
         });
-        navigate("/");
+        navigate("/dashboard");
       })
       .catch((err) => notifyError(err))
       .finally(() => setLoading(false));

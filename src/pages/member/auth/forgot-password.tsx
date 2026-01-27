@@ -28,7 +28,10 @@ export default function ForgotPassword() {
   const handleForgot = (data: ForgotFormValues) => {
     setLoading(true);
     http
-      .post("/auth/forgot-password", data)
+      .post("/auth/forgot-password", {
+        ...data,
+        type: "cs",
+      })
       .then(() => {
         notify(
           "Instruksi reset password telah dikirim ke WhatsApp/Email Anda.",

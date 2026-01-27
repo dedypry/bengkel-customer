@@ -48,7 +48,11 @@ export default function ResetPassword() {
 
     setLoading(true);
     http
-      .post("/auth/reset-password", { token, password: data.password })
+      .post("/auth/reset-password", {
+        token,
+        password: data.password,
+        type: "cs",
+      })
       .then(() => {
         notify("Password berhasil diperbarui!");
         setIsSuccess(true);
