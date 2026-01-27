@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import {
   Link,
   Navbar,
@@ -19,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 export default function NavbarCustom() {
   const [activeSection, setActiveSection] = useState("home");
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleScroll = (e: any, id: string) => {
     e.preventDefault();
@@ -198,7 +200,10 @@ export default function NavbarCustom() {
         <NavbarContent className="lg:min-w-[200px]" justify="end">
           {/* Tombol Join Member dengan gaya industri sesuai screenshot */}
           <div className="hidden md:flex h-full items-center">
-            <div className="bg-danger h-full flex items-center px-10 absolute right-0 cursor-pointer hover:bg-[#0B1C39] transition-colors group" onClick={()=> navigate('/login')}>
+            <div
+              className="bg-danger h-full flex items-center px-10 absolute right-0 cursor-pointer hover:bg-[#0B1C39] transition-colors group"
+              onClick={() => navigate("/login")}
+            >
               <p className="font-black text-lg text-white uppercase tracking-widest flex items-center gap-2">
                 Join Member
                 <span className="group-hover:translate-x-1 transition-transform">

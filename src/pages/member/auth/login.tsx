@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { useState } from "react";
 import { Button, Input, Card, CardBody, Link } from "@heroui/react";
 import { Phone, ArrowLeft, ArrowRight } from "lucide-react";
