@@ -1,0 +1,25 @@
+{
+    "mechanic": {
+        "status": {
+            "ready": "Tersedia",
+            "busy": "Sibuk",
+            "break": "Istirahat",
+            "leave": "Cuti"
+        },
+        "description": {
+            "ready": "Siap menerima tugas baru",
+            "busy": "Sedang mengerjakan kendaraan",
+            "break": "Sedang jam istirahat",
+            "leave": "Sedang tidak masuk kerja"
+        }
+    },
+    "queue": "Antre",
+    "on_progress": "Sedang Dikerjakan",
+    "pick_up": "Antre",
+    "ready": "Siap Diambil",
+    "finish": "Selesai",
+    "low": "Rendah",
+    "normal": "Normal",
+    "high": "Tinggi",
+    "cancel": "Batal"
+}

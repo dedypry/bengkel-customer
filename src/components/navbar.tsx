@@ -14,7 +14,7 @@ import {
 import { link as linkStyles } from "@heroui/theme";
 import clsx from "clsx";
 
-import { siteConfig } from "@/config/site";
+import { siteConfig } from "@/configs/site";
 import { ThemeSwitch } from "@/components/theme-switch";
 import {
   TwitterIcon,

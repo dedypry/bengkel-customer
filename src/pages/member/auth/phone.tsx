@@ -1,10 +1,10 @@
-import { Button, Input, Card, CardBody, Link } from "@heroui/react";
-import { ArrowLeft, ArrowRight, Lock, User } from "lucide-react";
+import { Button, Input, Card, CardBody, Link, InputOtp } from "@heroui/react";
+import { Phone, ArrowLeft, ArrowRight } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import Cookies from "js-cookie";
 
 import { http } from "@/utils/libs/axios";
@@ -12,44 +12,69 @@ import { notifyError } from "@/utils/helpers/notify";
 import GuestGuard from "@/guard/guest-guard";
 
 const loginSchema = z.object({
-  email: z.string().min(1, "Nomor telepon atau email wajib diisi"),
-  password: z.string().min(3, "Password minimal 3 karakter"),
+  phone: z.string().min(1, "Nomor telepon atau email wajib diisi"),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
 
-export default function MemberLogin() {
+export default function PhoneLogin() {
   const [loading, setLoading] = useState(false);
-
+  const [isCode, setIsCode] = useState(false);
+  const [isDisable, setIsDisable] = useState(true);
+  const [code, setCode] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (code.length === 4) {
+      setIsDisable(false);
+    }
+  }, [code]);
+
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      phone: "",
     },
   });
 
   const handleLogin = (data: LoginFormValues) => {
     setLoading(true);
     http
-      .post("/auth/login/customer", data)
+      .post("/auth/send-verify-code", data)
       .then(({ data }) => {
         console.log("DATA", data);
+        // navigate("/");
+        setIsCode(true);
+      })
+      .catch((err) => notifyError(err))
+      .finally(() => setLoading(false));
+  };
+
+  function handleVerify() {
+    setLoading(true);
+    const payload = {
+      phone: watch("phone"),
+      code: code,
+    };
+
+    http
+      .post("/auth/verify-code", payload)
+      .then(({ data }) => {
         Cookies.set("token", data.access_token, {
           expires: 1,
           path: "/",
           sameSite: "strict",
         });
-        // navigate("/");
+        navigate("/");
       })
       .catch((err) => notifyError(err))
       .finally(() => setLoading(false));
-  };
+  }
 
   return (
     <GuestGuard>
@@ -107,105 +132,97 @@ export default function MemberLogin() {
               className="flex flex-col gap-6"
               onSubmit={handleSubmit(handleLogin)}
             >
-              <div className="relative">
-                <Controller
-                  control={control}
-                  name="email"
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label:
-                          "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
-                        inputWrapper: `border-2 bg-white ${
-                          errors.email
-                            ? "border-danger"
-                            : "group-data-[focus=true]:border-danger"
-                        }`,
-                      }}
-                      errorMessage={errors.email?.message}
-                      isInvalid={!!errors.email}
-                      label="Nomor Telepon/Email"
-                      labelPlacement="outside"
-                      placeholder="Masukan Email/ No. Telp"
-                      startContent={
-                        <User className="text-gray-400 mr-2" size={20} />
-                      }
-                      variant="bordered"
-                    />
-                  )}
-                />
-              </div>
-              <div className="relative">
-                <Controller
-                  control={control}
-                  name="password"
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      classNames={{
-                        label:
-                          "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
-                        inputWrapper: `border-2 bg-white ${
-                          errors.password
-                            ? "border-danger"
-                            : "group-data-[focus=true]:border-danger"
-                        }`,
-                      }}
-                      errorMessage={errors.password?.message}
-                      isInvalid={!!errors.password}
-                      label="Password"
-                      labelPlacement="outside"
-                      placeholder="*****"
-                      startContent={
-                        <Lock className="text-gray-400 mr-2" size={20} />
-                      }
-                      type="password"
-                      variant="bordered"
-                    />
-                  )}
-                />
-
-                <div className="flex justify-end mt-1">
-                  <Link
-                    className="text-xs font-bold text-gray-500 hover:text-danger transition-colors"
-                    href="/forgot-password"
-                  >
-                    Lupa Password?
-                  </Link>
+              {!isCode ? (
+                <div className="relative">
+                  <Controller
+                    control={control}
+                    name="phone"
+                    render={({ field }) => (
+                      <Input
+                        {...field}
+                        classNames={{
+                          label:
+                            "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
+                          inputWrapper: `border-2 bg-white ${
+                            errors.phone
+                              ? "border-danger"
+                              : "group-data-[focus=true]:border-danger"
+                          }`,
+                        }}
+                        errorMessage={errors.phone?.message}
+                        isInvalid={!!errors.phone}
+                        label="Nomor Telepon"
+                        labelPlacement="outside"
+                        placeholder="Masukan No. Telp"
+                        startContent={
+                          <Phone className="text-gray-400 mr-2" size={20} />
+                        }
+                        variant="bordered"
+                      />
+                    )}
+                  />
                 </div>
-              </div>
+              ) : (
+                <div>
+                  <p className="font-bold text-center text-[#0B1C39] uppercase tracking-wider text-xs">
+                    Kode Verifikasi
+                  </p>
+                  <div className="flex justify-center">
+                    <InputOtp
+                      length={4}
+                      variant="bordered"
+                      onValueChange={setCode}
+                    />
+                  </div>
+                </div>
+              )}
 
-              <Button
-                className="bg-danger text-white font-black uppercase tracking-widest hover:bg-[#0B1C39] transition-all group"
-                endContent={
-                  <ArrowRight className="group-hover:translate-x-2 transition-transform" />
-                }
-                isLoading={loading}
-                type="submit"
-              >
-                Masuk Sekarang
-              </Button>
+              {!isCode ? (
+                <Button
+                  className="bg-danger text-white font-black uppercase tracking-widest hover:bg-[#0B1C39] transition-all group"
+                  endContent={
+                    <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  }
+                  isLoading={loading}
+                  type="submit"
+                >
+                  Verifikasi Sekarang
+                </Button>
+              ) : (
+                <Button
+                  className="bg-danger text-white font-black uppercase tracking-widest hover:bg-[#0B1C39] transition-all group"
+                  endContent={
+                    <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+                  }
+                  isDisabled={isDisable}
+                  isLoading={loading}
+                  onPress={handleVerify}
+                >
+                  Masuk Sekarang
+                </Button>
+              )}
             </form>
 
             {/* Footer Login */}
-            <div className="mt-10 flex flex-col gap-4 items-center border-t border-gray-100 pt-8">
-              <p className="text-sm text-gray-600">
-                Masuk menggunakan wa code?{" "}
+            {!isCode && (
+              <div className="mt-10 flex flex-col gap-4 items-center border-t border-gray-100 pt-8">
+                <p className="text-sm text-gray-600">
+                  Belum punya member?{" "}
+                  <Link
+                    className="text-danger font-bold hover:underline cursor-pointer"
+                    href="/register"
+                  >
+                    Daftar Sekarang
+                  </Link>
+                </p>
                 <Link
-                  className="text-danger font-bold hover:underline cursor-pointer"
+                  className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-danger transition-colors cursor-pointer"
                   href="/login/phone"
                 >
-                  Masuk Sekarang
+                  <ArrowLeft size={14} /> Kembali ke Beranda
                 </Link>
-              </p>
-              <Link
-                className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-danger transition-colors cursor-pointer"
-                href="/"
-              >
-                <ArrowLeft size={14} /> Kembali ke Beranda
-              </Link>
-            </div>
+              </div>
+            )}
           </CardBody>
         </Card>
 

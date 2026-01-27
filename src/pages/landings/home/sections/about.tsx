@@ -2,7 +2,7 @@
 import { Button } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
 
-import { profile } from "@/config/profile";
+import { profile } from "@/configs/profile";
 
 export function AboutSection() {
   const points = [

@@ -3,7 +3,10 @@ import { Button } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
+import { useAppSelector } from "@/stores/hooks";
+
 export default function CarouselSection() {
+  const { user } = useAppSelector((state) => state.auth);
   const navigate = useNavigate();
 
   return (
@@ -47,9 +50,9 @@ export default function CarouselSection() {
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" />
               }
               size="lg"
-              onPress={() => navigate("/login")}
+              onPress={() => navigate(user ? "/dashboard" : "/login")}
             >
-              Join Member
+              {user ? "Dashboard" : "Join Member"}
             </Button>
           </div>
         </div>

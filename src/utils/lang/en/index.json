@@ -1,0 +1,25 @@
+{
+    "mechanic": {
+        "status": {
+            "ready": "Ready",
+            "busy": "Busy",
+            "break": "On Break",
+            "leave": "On Leave"
+        },
+        "description": {
+            "ready": "Available for new tasks",
+            "busy": "Currently working on a vehicle",
+            "break": "Currently taking a rest",
+            "leave": "Currently out of office"
+        }
+    },
+    "queue": "Queue",
+    "on_progress": "On Progress",
+    "pick_up": "Ready to Pick Up",
+    "ready": "Ready",
+    "finish": "Finished",
+    "low": "Low",
+    "normal": "Normal",
+    "high": "High",
+    "cancel": "Cancel"
+}

@@ -16,10 +16,19 @@ import {
   Instagram,
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
+import { useAppSelector } from "@/stores/hooks";
 
 export default function NavbarCustom() {
   const [activeSection, setActiveSection] = useState("home");
+  const { user } = useAppSelector((state) => state.auth);
+  const { pathname } = useLocation();
+
+  const isDashboard =
+    pathname.startsWith("/customer") || pathname.startsWith("/dashboard");
+
+  console.log(isDashboard);
 
   const navigate = useNavigate();
 
@@ -167,7 +176,7 @@ export default function NavbarCustom() {
         position="sticky"
       >
         <NavbarBrand>
-          <div className="flex items-center gap-2">
+          <Link className="flex items-center gap-2 cursor-pointer" href="/">
             <div className="bg-danger p-1.5 rounded-sm">
               <span className="text-white font-black text-xl italic leading-none">
                 HCP
@@ -176,25 +185,26 @@ export default function NavbarCustom() {
             <p className="font-black text-2xl text-[#0B1C39] tracking-tighter uppercase">
               Honda <span className="text-danger">Clinik</span> Pradana
             </p>
-          </div>
+          </Link>
         </NavbarBrand>
 
         <NavbarContent className="hidden lg:flex gap-8" justify="center">
-          {menuItems.map((item) => (
-            <NavbarItem key={item.id} isActive={activeSection === item.id}>
-              <Link
-                className={`font-bold text-sm uppercase tracking-wider transition-colors ${
-                  activeSection === item.id
-                    ? "text-danger"
-                    : "text-[#0B1C39] hover:text-danger"
-                }`}
-                href={`#${item.id}`}
-                onClick={(e) => handleScroll(e, item.id)}
-              >
-                {item.name}
-              </Link>
-            </NavbarItem>
-          ))}
+          {!isDashboard &&
+            menuItems.map((item) => (
+              <NavbarItem key={item.id} isActive={activeSection === item.id}>
+                <Link
+                  className={`font-bold text-sm uppercase tracking-wider transition-colors ${
+                    activeSection === item.id
+                      ? "text-danger"
+                      : "text-[#0B1C39] hover:text-danger"
+                  }`}
+                  href={`#${item.id}`}
+                  onClick={(e) => handleScroll(e, item.id)}
+                >
+                  {item.name}
+                </Link>
+              </NavbarItem>
+            ))}
         </NavbarContent>
 
         <NavbarContent className="lg:min-w-[200px]" justify="end">
@@ -202,10 +212,10 @@ export default function NavbarCustom() {
           <div className="hidden md:flex h-full items-center">
             <div
               className="bg-danger h-full flex items-center px-10 absolute right-0 cursor-pointer hover:bg-[#0B1C39] transition-colors group"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate(user ? "/dashboard" : "/login")}
             >
               <p className="font-black text-lg text-white uppercase tracking-widest flex items-center gap-2">
-                Join Member
+                {user ? "Dashboard" : "Join Member"}
                 <span className="group-hover:translate-x-1 transition-transform">
                   →
                 </span>
