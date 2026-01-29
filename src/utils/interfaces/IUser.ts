@@ -15,6 +15,24 @@ export interface IUser {
   updated_at: string;
   deleted_at: string;
   profile: IProfile;
+  vehicles: IVehicle[];
+}
+
+export interface IVehicle {
+  id: number;
+  plate_number: string;
+  brand: string;
+  model: string;
+  year?: string;
+  engine_capacity?: string;
+  transmission_type?: string;
+  fuel_type?: string;
+  vin_number?: string;
+  engine_number?: string;
+  tire_size?: string;
+  company_id?: number;
+  updated_by?: number;
+  color?: string;
 }
 
 interface IProfile {
@@ -35,6 +53,25 @@ interface IProfile {
   place_birth?: string;
   updated_by?: number;
   model?: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string;
+}
+
+export interface IUserOffice {
+  id: number;
+  nik?: string;
+  name: string;
+  email: string;
+  password: string;
+  position?: string;
+  is_active?: boolean;
+  type?: string;
+  department?: string;
+  status?: string;
+  company_id?: number;
+  updated_by?: number;
+  work_status?: string;
   created_at: string;
   updated_at: string;
   deleted_at: string;

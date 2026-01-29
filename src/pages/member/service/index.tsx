@@ -1,46 +1,38 @@
-import {
-  Card,
-  CardBody,
-  Button,
-  Chip,
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Tabs,
-  Tab,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from "@heroui/react";
-import { Plus, History, Car, ChevronRight, CalendarDays } from "lucide-react";
+import { Card, CardBody, Tabs, Tab } from "@heroui/react";
+import { Plus, Car, ChevronRight } from "lucide-react";
+import { useState } from "react";
+
+import AddVehicleModal from "./add-vehicle";
+import BookingModal from "./booking";
+
+import { useAppSelector } from "@/stores/hooks";
+import { IVehicle } from "@/utils/interfaces/IUser";
 
 export default function MemberServicePage() {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { user } = useAppSelector((state) => state.auth);
+  const [modalAdd, setModalAdd] = useState(false);
+  const [data, setData] = useState<IVehicle>();
 
   return (
     <div className="flex flex-col gap-6">
+      <AddVehicleModal data={data} isOpen={modalAdd} setOpen={setModalAdd} />
       {/* Header Section */}
       <div className="flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-bold text-[#0B1C39]">Layanan Servis</h1>
-          <p className="text-default-500 text-sm">
+          <p className="text-gray-500 text-sm">
             Kelola kendaraan dan jadwal perawatan Anda.
           </p>
         </div>
-        <Button
+        <BookingModal vehicles={user?.vehicles || []} />
+        {/* <Button
           className="font-bold uppercase tracking-wider"
           color="danger"
           startContent={<Plus size={18} />}
           onPress={onOpen}
         >
           Booking Servis
-        </Button>
+        </Button> */}
       </div>
 
       <Tabs
@@ -66,24 +58,15 @@ export default function MemberServicePage() {
           }
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            {[
-              {
-                name: "Toyota Avanza",
-                plate: "B 1234 ABC",
-                color: "Hitam",
-                year: "2020",
-              },
-              {
-                name: "Honda Vario 150",
-                plate: "B 5566 DEF",
-                color: "Merah",
-                year: "2022",
-              },
-            ].map((car, idx) => (
+            {user?.vehicles?.map((car, idx) => (
               <Card
                 key={idx}
                 isPressable
                 className="border-1 border-divider shadow-sm hover:border-danger transition-colors"
+                onClick={() => {
+                  setData(car);
+                  setModalAdd(true);
+                }}
               >
                 <CardBody className="flex flex-row items-center justify-between p-4">
                   <div className="flex items-center gap-4">
@@ -91,106 +74,43 @@ export default function MemberServicePage() {
                       <Car size={24} />
                     </div>
                     <div>
-                      <p className="font-bold text-[#0B1C39]">{car.name}</p>
-                      <p className="text-xs text-default-500">
-                        {car.plate} • {car.color}
+                      <p className="font-bold text-[#0B1C39]">
+                        {car.brand} {car.model}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {car.plate_number} • {car.color}
                       </p>
                     </div>
                   </div>
-                  <ChevronRight className="text-default-300" size={20} />
+                  <ChevronRight className="text-gray-500" size={20} />
                 </CardBody>
               </Card>
             ))}
-          </div>
-        </Tab>
-
-        {/* TAB 2: RIWAYAT SERVIS */}
-        <Tab
-          key="history"
-          title={
-            <div className="flex items-center space-x-2">
-              <History size={18} />
-              <span>Riwayat Servis</span>
-            </div>
-          }
-        >
-          <div className="mt-4">
-            <Table
-              aria-label="Riwayat Servis Table"
-              className="border-1 border-divider rounded-xl"
-              shadow="none"
+            <Card
+              isPressable
+              className="border-2 border-dashed border-divider shadow-none bg-transparent hover:bg-default-50 hover:border-danger transition-all group"
+              onPress={() => {
+                setData(undefined);
+                setModalAdd(true);
+              }}
             >
-              <TableHeader>
-                <TableColumn>TANGGAL</TableColumn>
-                <TableColumn>KENDARAAN</TableColumn>
-                <TableColumn>JENIS SERVIS</TableColumn>
-                <TableColumn>STATUS</TableColumn>
-                <TableColumn>TOTAL</TableColumn>
-              </TableHeader>
-              <TableBody>
-                <TableRow key="1">
-                  <TableCell>12 Jan 2024</TableCell>
-                  <TableCell>Toyota Avanza</TableCell>
-                  <TableCell>Ganti Oli & Cek Rem</TableCell>
-                  <TableCell>
-                    <Chip color="success" size="sm" variant="flat">
-                      Selesai
-                    </Chip>
-                  </TableCell>
-                  <TableCell className="font-bold">Rp 450.000</TableCell>
-                </TableRow>
-                <TableRow key="2">
-                  <TableCell>05 Des 2023</TableCell>
-                  <TableCell>Honda Vario</TableCell>
-                  <TableCell>Tune Up Rutin</TableCell>
-                  <TableCell>
-                    <Chip color="success" size="sm" variant="flat">
-                      Selesai
-                    </Chip>
-                  </TableCell>
-                  <TableCell className="font-bold">Rp 150.000</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
+              <CardBody className="flex flex-row items-center p-4">
+                <div className="w-12 h-12 border-2 border-dashed border-gray-300 rounded-full flex items-center justify-center text-gray-400 group-hover:text-danger group-hover:border-danger transition-colors">
+                  <Plus size={24} />
+                </div>
+                <div className="ml-4 text-left">
+                  <p className="font-bold text-gray-600 group-hover:text-danger transition-colors">
+                    Tambah Kendaraan Baru
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    Daftarkan kendaraan Anda lainnya
+                  </p>
+                </div>
+              </CardBody>
+            </Card>
           </div>
         </Tab>
       </Tabs>
-
-      {/* Modal Booking (Simple Placeholder) */}
-      <Modal isOpen={isOpen} size="xl" onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1 text-[#0B1C39]">
-                Booking Servis Baru
-              </ModalHeader>
-              <ModalBody>
-                <p className="text-default-500 text-sm mb-4">
-                  Pilih kendaraan dan tentukan jadwal kunjungan Anda ke bengkel.
-                </p>
-                {/* Kamu bisa masukkan form useForm & zod di sini nanti */}
-                <div className="p-10 border-2 border-dashed border-divider rounded-xl text-center">
-                  <CalendarDays
-                    className="mx-auto text-default-300 mb-2"
-                    size={48}
-                  />
-                  <p className="text-default-400 font-medium">
-                    Formulir Booking Akan Muncul di Sini
-                  </p>
-                </div>
-              </ModalBody>
-              <ModalFooter>
-                <Button variant="light" onPress={onClose}>
-                  Batal
-                </Button>
-                <Button color="danger" onPress={onClose}>
-                  Lanjutkan
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

@@ -15,47 +15,33 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@heroui/react";
-import {
-  Search,
-  Filter,
-  Download,
-  Eye,
-  FileText,
-  Car,
-  Wrench,
-} from "lucide-react";
-import { useState } from "react";
+import { Search, Download, Eye, FileText, Car, Wrench } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
 
 import ServiceDetailModal from "./detail";
 
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import { getWo, getWoDetail } from "@/stores/features/wo/wo-action";
+import { formatIDR } from "@/utils/helpers/format";
+import CustomPagination from "@/components/custom-pagination";
+import { setWoQuery } from "@/stores/features/wo/wo-slice";
+import { handleDownload } from "@/utils/helpers/global";
+
 export default function MemberHistoryPage() {
+  const { history, woQuery } = useAppSelector((state) => state.wo);
+  const { user } = useAppSelector((state) => state.auth);
   const [open, setOpen] = useState(false);
-  const historyData = [
-    {
-      id: "INV-9920",
-      date: "24 Jan 2024",
-      vehicle: "Toyota Avanza (B 1234 ABC)",
-      service: "Ganti Oli Shell Helix & Filter",
-      status: "Selesai",
-      amount: "Rp 550.000",
-    },
-    {
-      id: "INV-9811",
-      date: "10 Des 2023",
-      vehicle: "Honda Vario (B 5566 DEF)",
-      service: "Servis CVT & Ganti Kampas Rem",
-      status: "Selesai",
-      amount: "Rp 210.000",
-    },
-    {
-      id: "INV-9502",
-      date: "15 Okt 2023",
-      vehicle: "Toyota Avanza (B 1234 ABC)",
-      service: "Spooring & Balancing",
-      status: "Dibatalkan",
-      amount: "Rp 350.000",
-    },
-  ];
+  const [printLoading, setPrintLoading] = useState(0);
+  const dispatch = useAppDispatch();
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    dispatch(getWo(woQuery));
+  }, [woQuery]);
+
+  const veh = user?.vehicles.find((v) => v.id === woQuery.vehicle_id);
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,17 +78,34 @@ export default function MemberHistoryPage() {
           <Dropdown>
             <DropdownTrigger>
               <Button startContent={<Car size={18} />} variant="bordered">
-                Pilih Kendaraan
+                {veh ? `${veh?.brand} ${veh?.model}` : "Semua Kendaraan"}
               </Button>
             </DropdownTrigger>
             <DropdownMenu aria-label="Vehicle Filter">
-              <DropdownItem key="all">Semua Kendaraan</DropdownItem>
-              <DropdownItem key="avanza">Toyota Avanza</DropdownItem>
-              <DropdownItem key="vario">Honda Vario</DropdownItem>
+              <DropdownItem
+                key="all"
+                onClick={() => dispatch(setWoQuery({ vehicle_id: null }))}
+              >
+                Semua Kendaraan
+              </DropdownItem>
+              <>
+                {(user?.vehicles || []).map((vehicle) => (
+                  <DropdownItem
+                    key={vehicle.id}
+                    onClick={() =>
+                      dispatch(setWoQuery({ vehicle_id: vehicle.id }))
+                    }
+                  >
+                    {vehicle.brand} {vehicle.model}
+                    {" | "}
+                    <Chip radius="sm">{vehicle.plate_number}</Chip>
+                  </DropdownItem>
+                ))}
+              </>
             </DropdownMenu>
           </Dropdown>
 
-          <Dropdown>
+          {/* <Dropdown>
             <DropdownTrigger>
               <Button startContent={<Filter size={18} />} variant="bordered">
                 Status
@@ -113,7 +116,7 @@ export default function MemberHistoryPage() {
               <DropdownItem key="proses">Sedang Proses</DropdownItem>
               <DropdownItem key="batal">Dibatalkan</DropdownItem>
             </DropdownMenu>
-          </Dropdown>
+          </Dropdown> */}
         </div>
       </div>
 
@@ -138,28 +141,41 @@ export default function MemberHistoryPage() {
               <TableColumn align="center">AKSI</TableColumn>
             </TableHeader>
             <TableBody>
-              {historyData.map((item) => (
+              {(history?.data || []).map((item) => (
                 <TableRow
                   key={item.id}
                   className="border-b-1 border-divider last:border-0"
                 >
                   <TableCell>
-                    <span className="font-bold text-primary">{item.id}</span>
+                    <div className="flex flex-col items-center">
+                      <span className="font-bold text-primary">
+                        {item.trx_no}
+                      </span>
+                      <Chip radius="sm" size="sm">
+                        {item.vehicle.plate_number}
+                      </Chip>
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="text-sm font-semibold">{item.date}</span>
-                      <span className="text-xs text-default-400">
-                        {item.vehicle}
+                      <span className="text-sm font-semibold">
+                        {dayjs(item.created_at).format("dd, DD MMM YYYY")}
+                      </span>
+                      <span className="text-xs text-gray-400 capitalize">
+                        {item.vehicle.brand} {item.vehicle.model}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-default-100 rounded text-default-600">
+                      <div className="p-1.5 bg-default-100 rounded text-gray-600">
                         <Wrench size={14} />
                       </div>
-                      <span className="text-sm">{item.service}</span>
+                      <span className="text-xs">
+                        {item.services.length > 0
+                          ? item.services[0].data?.name
+                          : "-"}
+                      </span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -174,11 +190,11 @@ export default function MemberHistoryPage() {
                       size="sm"
                       variant="flat"
                     >
-                      {item.status}
+                      {t(item.status!)}
                     </Chip>
                   </TableCell>
                   <TableCell className="font-black text-[#0B1C39]">
-                    {item.amount}
+                    {formatIDR(item.grand_total)}
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-center gap-2">
@@ -187,16 +203,28 @@ export default function MemberHistoryPage() {
                         size="sm"
                         title="Lihat Detail"
                         variant="light"
-                        onPress={() => setOpen(true)}
+                        onPress={() => {
+                          dispatch(getWoDetail(item.id));
+                          setOpen(true);
+                        }}
                       >
-                        <Eye className="text-default-500" size={18} />
+                        <Eye className="text-gray-500" size={18} />
                       </Button>
                       <Button
                         isIconOnly
                         color="danger"
+                        isLoading={printLoading === item.id}
                         size="sm"
                         title="Download Invoice"
                         variant="light"
+                        onPress={() =>
+                          handleDownload(
+                            `/invoices/${item.id}`,
+                            item.trx_no,
+                            false,
+                            () => setPrintLoading(item.id),
+                          )
+                        }
                       >
                         <Download size={18} />
                       </Button>
@@ -206,15 +234,13 @@ export default function MemberHistoryPage() {
               ))}
             </TableBody>
           </Table>
+          <CustomPagination
+            className="px-5 pb-5"
+            meta={history?.meta!}
+            onChange={(page) => dispatch(setWoQuery({ page }))}
+          />
         </CardBody>
       </Card>
-
-      {/* Pagination Placeholder */}
-      <div className="flex justify-center mt-4">
-        <p className="text-xs text-default-400 font-medium italic">
-          Menampilkan 3 riwayat terakhir dari total 12 data.
-        </p>
-      </div>
     </div>
   );
 }

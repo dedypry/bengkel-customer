@@ -28,8 +28,6 @@ export default function NavbarCustom() {
   const isDashboard =
     pathname.startsWith("/customer") || pathname.startsWith("/dashboard");
 
-  console.log(isDashboard);
-
   const navigate = useNavigate();
 
   const handleScroll = (e: any, id: string) => {

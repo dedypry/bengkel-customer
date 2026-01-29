@@ -1,25 +1,16 @@
-import {
-  Card,
-  CardBody,
-  Button,
-  Input,
-  Avatar,
-  Tabs,
-  Tab,
-  Divider,
-} from "@heroui/react";
-import {
-  User,
-  Lock,
-  Mail,
-  Phone,
-  MapPin,
-  Camera,
-  Save,
-  ShieldCheck,
-} from "lucide-react";
+import { Button, Avatar, Tabs, Tab } from "@heroui/react";
+import { User, Lock, Camera } from "lucide-react";
+import dayjs from "dayjs";
+
+import PersonalForm from "./personal-form";
+import ChangePassword from "./change-password";
+
+import { useAppSelector } from "@/stores/hooks";
+import { getAvatarByName } from "@/utils/helpers/global";
 
 export default function MemberProfilePage() {
+  const { user } = useAppSelector((state) => state.auth);
+
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-6">
       {/* Header Profile */}
@@ -27,7 +18,7 @@ export default function MemberProfilePage() {
         <div className="relative">
           <Avatar
             className="w-32 h-32 text-large shadow-lg"
-            src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+            src={user?.profile.photo_url || getAvatarByName(user?.name || "")}
           />
           <Button
             isIconOnly
@@ -39,9 +30,9 @@ export default function MemberProfilePage() {
           </Button>
         </div>
         <div className="text-center md:text-left space-y-1">
-          <h1 className="text-2xl font-black text-[#0B1C39]">Dedy Pry</h1>
+          <h1 className="text-2xl font-black text-[#0B1C39]">{user?.name}</h1>
           <p className="text-default-500 font-medium">
-            Member Platinum • Sejak Jan 2024
+            Member • Sejak {dayjs(user?.created_at).format("MMM YYYY")}
           </p>
           <div className="flex gap-2 mt-2 justify-center md:justify-start">
             <div className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-bold">
@@ -77,57 +68,7 @@ export default function MemberProfilePage() {
             </div>
           }
         >
-          <Card className="mt-4 border-1 border-divider shadow-none">
-            <CardBody className="p-8">
-              <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Input
-                  defaultValue="Dedy Pry"
-                  label="Nama Lengkap"
-                  labelPlacement="outside"
-                  placeholder="Masukkan nama lengkap"
-                  startContent={<User className="text-default-400" size={18} />}
-                  variant="bordered"
-                />
-                <Input
-                  defaultValue="dedypry@gmail.com"
-                  label="Email"
-                  labelPlacement="outside"
-                  placeholder="email@contoh.com"
-                  startContent={<Mail className="text-default-400" size={18} />}
-                  variant="bordered"
-                />
-                <Input
-                  defaultValue="081234567890"
-                  label="Nomor Telepon"
-                  labelPlacement="outside"
-                  placeholder="0812..."
-                  startContent={
-                    <Phone className="text-default-400" size={18} />
-                  }
-                  variant="bordered"
-                />
-                <Input
-                  defaultValue="Bekasi Regency, West Java"
-                  label="Alamat"
-                  labelPlacement="outside"
-                  placeholder="Masukkan alamat"
-                  startContent={
-                    <MapPin className="text-default-400" size={18} />
-                  }
-                  variant="bordered"
-                />
-                <div className="md:col-span-2 flex justify-end mt-4">
-                  <Button
-                    className="font-bold px-8"
-                    color="danger"
-                    startContent={<Save size={18} />}
-                  >
-                    Simpan Perubahan
-                  </Button>
-                </div>
-              </form>
-            </CardBody>
-          </Card>
+          <PersonalForm />
         </Tab>
 
         {/* TAB 2: GANTI PASSWORD */}
@@ -140,51 +81,7 @@ export default function MemberProfilePage() {
             </div>
           }
         >
-          <Card className="mt-4 border-1 border-divider shadow-none">
-            <CardBody className="p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-warning/10 text-warning rounded-lg">
-                  <ShieldCheck size={24} />
-                </div>
-                <div>
-                  <h4 className="font-bold text-[#0B1C39]">Ganti Password</h4>
-                  <p className="text-xs text-default-500">
-                    Pastikan password baru Anda kuat dan unik.
-                  </p>
-                </div>
-              </div>
-
-              <form className="flex flex-col gap-6 max-w-md">
-                <Input
-                  label="Password Saat Ini"
-                  labelPlacement="outside"
-                  placeholder="••••••••"
-                  type="password"
-                  variant="bordered"
-                />
-                <Divider />
-                <Input
-                  label="Password Baru"
-                  labelPlacement="outside"
-                  placeholder="••••••••"
-                  type="password"
-                  variant="bordered"
-                />
-                <Input
-                  label="Konfirmasi Password Baru"
-                  labelPlacement="outside"
-                  placeholder="••••••••"
-                  type="password"
-                  variant="bordered"
-                />
-                <div className="flex justify-start mt-2">
-                  <Button className="font-bold px-8" color="danger">
-                    Perbarui Password
-                  </Button>
-                </div>
-              </form>
-            </CardBody>
-          </Card>
+          <ChangePassword />
         </Tab>
       </Tabs>
     </div>

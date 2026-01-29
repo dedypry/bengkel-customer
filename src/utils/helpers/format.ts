@@ -1,4 +1,9 @@
-export const formatIDR = (price: number, type: "full" | "short" = "full") => {
+export const formatIDR = (
+  price: number | string | undefined,
+  type: "full" | "short" = "full",
+) => {
+  if (price == undefined) return "-";
+  price = Number(price);
   if (type === "short") {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -19,7 +24,7 @@ export const formatIDR = (price: number, type: "full" | "short" = "full") => {
   }).format(price);
 };
 
-export const formatNumber = (value: number | string): string => {
+export const formatNumber = (value: number | string | undefined): string => {
   if (value === null || value === undefined) return "0";
 
   // Konversi ke number jika input berupa string

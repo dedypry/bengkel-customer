@@ -55,9 +55,9 @@ export default function LayoutDashboard() {
 
   return (
     <AuthGuard>
-      <div className="flex gap-6 container mx-auto py-8 px-4 h-screen">
+      <div className="flex gap-6 px-10 py-8 h-screen">
         {/* Sidebar - Sebelah Kiri */}
-        <div className="w-full max-w-[280px] border-r-1 border-divider pr-4 hidden md:block">
+        <div className="w-full max-w-[240px] border-r-1 border-divider pr-4 hidden md:block">
           <Listbox
             aria-label="User Menu"
             className="p-0 gap-2"

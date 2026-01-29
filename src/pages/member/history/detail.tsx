@@ -24,6 +24,13 @@ import {
   Download,
   Printer,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import dayjs from "dayjs";
+import { useState } from "react";
+
+import { useAppSelector } from "@/stores/hooks";
+import { formatIDR, formatNumber } from "@/utils/helpers/format";
+import { handleDownload } from "@/utils/helpers/global";
 
 interface ServiceDetailProps {
   isOpen: boolean;
@@ -34,15 +41,12 @@ export default function ServiceDetailModal({
   isOpen,
   onOpenChange,
 }: ServiceDetailProps) {
-  // Data dummy untuk rincian part
-  const items = [
-    { id: 1, name: "Oli Mesin Shell Helix HX8 5W-30", qty: 1, price: 450000 },
-    { id: 2, name: "Filter Oli Toyota Original", qty: 1, price: 75000 },
-    { id: 3, name: "Pembersih Rem (Brake Cleaner)", qty: 2, price: 50000 },
-    { id: 4, name: "Jasa Servis Berkala 10.000km", qty: 1, price: 250000 },
-  ];
+  const { detail } = useAppSelector((state) => state.wo);
+  const [printLoading, setPrintLoading] = useState(false);
 
-  const total = items.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const { t } = useTranslation();
+
+  if (!detail) return null;
 
   return (
     <Modal
@@ -59,16 +63,17 @@ export default function ServiceDetailModal({
               <div className="flex justify-between items-center pr-6">
                 <div className="flex items-center gap-2">
                   <FileText className="text-danger" size={20} />
-                  <span className="text-xl font-black text-[#0B1C39]">
-                    DETAIL INVOICE #INV-9920
+                  <span className="text-xl font-black text-gray-500">
+                    DETAIL INVOICE #{detail.trx_no}
                   </span>
                 </div>
+
                 <Chip
                   color="success"
                   startContent={<CheckCircle2 size={14} />}
                   variant="flat"
                 >
-                  Lunas
+                  {t(detail.status!)}
                 </Chip>
               </div>
             </ModalHeader>
@@ -78,18 +83,20 @@ export default function ServiceDetailModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-default-100 rounded-lg text-default-600">
+                    <div className="p-2 bg-default-100 rounded-lg text-gray-600">
                       <Car size={20} />
                     </div>
                     <div>
-                      <p className="text-xs text-default-500 uppercase font-bold">
+                      <p className="text-xs text-gray-400 uppercase font-bold">
                         Kendaraan
                       </p>
-                      <p className="font-bold text-[#0B1C39]">
-                        Toyota Avanza (2020)
+                      <p className="font-bold text-gray-500 text-sm">
+                        {detail?.vehicle?.brand} {detail?.vehicle?.model} (
+                        {detail?.vehicle?.year})
                       </p>
-                      <p className="text-sm text-default-400">
-                        B 1234 ABC • Hitam
+                      <p className="text-xs text-default-700">
+                        {detail?.vehicle?.plate_number} •{" "}
+                        {detail?.vehicle?.color}
                       </p>
                     </div>
                   </div>
@@ -98,14 +105,15 @@ export default function ServiceDetailModal({
                       <Calendar size={20} />
                     </div>
                     <div>
-                      <p className="text-xs text-default-500 uppercase font-bold">
+                      <p className="text-xs text-gray-400 uppercase font-bold">
                         Waktu Servis
                       </p>
-                      <p className="font-bold text-[#0B1C39]">
-                        24 Januari 2026
+                      <p className="font-bold text-gray-500 text-sm">
+                        {dayjs(detail.created_at).format("DD MMMM YYYY")}
                       </p>
-                      <p className="text-sm text-default-400">
-                        09:00 - 11:30 WIB
+                      <p className="text-xs text-default-600">
+                        {dayjs(detail.start_at).format("HH:mm")} -{" "}
+                        {dayjs(detail.end_at).format("HH:mm WIB")}
                       </p>
                     </div>
                   </div>
@@ -117,13 +125,16 @@ export default function ServiceDetailModal({
                       <User size={20} />
                     </div>
                     <div>
-                      <p className="text-xs text-default-500 uppercase font-bold">
+                      <p className="text-xs text-gray-400 uppercase font-bold">
                         Mekanik
                       </p>
-                      <p className="font-bold text-[#0B1C39]">Agus Setiawan</p>
-                      <p className="text-sm text-default-400">
-                        Senior Technician
+                      <p className="font-bold text-gray-500 text-xs">
+                        {detail.mechanics.map((mech) => mech.name).join(", ")}
                       </p>
+
+                      {/* <p className="text-sm text-default-400">
+                        Senior Technician
+                      </p> */}
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -131,10 +142,12 @@ export default function ServiceDetailModal({
                       <Wrench size={20} />
                     </div>
                     <div>
-                      <p className="text-xs text-default-500 uppercase font-bold">
+                      <p className="text-xs text-gray-400 uppercase font-bold">
                         KM Kendaraan
                       </p>
-                      <p className="font-bold text-[#0B1C39]">45.230 KM</p>
+                      <p className="font-bold text-gray-500 text-sm">
+                        {formatNumber(detail.current_km)} KM
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -143,7 +156,7 @@ export default function ServiceDetailModal({
               <Divider className="my-4" />
 
               {/* Rincian Pekerjaan & Part */}
-              <h4 className="font-bold text-[#0B1C39] mb-4">
+              <h4 className="font-bold text-gray-500 mb-4">
                 Rincian Suku Cadang & Jasa
               </h4>
               <Table removeWrapper aria-label="Rincian Biaya" className="mb-6">
@@ -154,18 +167,25 @@ export default function ServiceDetailModal({
                   <TableColumn align="end">SUBTOTAL</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {items.map((item) => (
+                  {[...detail.services, ...detail.spareparts].map((item) => (
                     <TableRow
                       key={item.id}
                       className="border-b border-divider/50"
                     >
-                      <TableCell className="text-sm">{item.name}</TableCell>
-                      <TableCell className="text-center">{item.qty}</TableCell>
-                      <TableCell className="text-right">
-                        Rp {item.price.toLocaleString()}
+                      <TableCell className="text-sm">
+                        {item.data?.name}
                       </TableCell>
-                      <TableCell className="text-right font-bold text-[#0B1C39]">
-                        Rp {(item.price * item.qty).toLocaleString()}
+                      <TableCell className="text-center">
+                        {formatNumber(item.qty)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {formatIDR(
+                          (item.data as any)?.purchase_price ||
+                            (item.data as any)?.price,
+                        )}
+                      </TableCell>
+                      <TableCell className="text-right font-bold text-gray-500">
+                        {formatIDR(item.total_price)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -175,24 +195,38 @@ export default function ServiceDetailModal({
               {/* Ringkasan Biaya */}
               <div className="bg-default-50 p-4 rounded-xl space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-default-500">Subtotal</span>
+                  <span className="text-gray-500">Subtotal</span>
                   <span className="font-medium">
-                    Rp {total.toLocaleString()}
+                    {formatIDR(detail.sub_total)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-success">
-                  <span>Diskon Member (10%)</span>
-                  <span>- Rp {(total * 0.1).toLocaleString()}</span>
-                </div>
+                {(detail?.promo_data || []).map((promo, i) => (
+                  <div
+                    key={i}
+                    className="flex justify-between text-sm text-success"
+                  >
+                    <span>
+                      {promo.name}{" "}
+                      {promo.type === "percentage"
+                        ? `(${promo.value}%) `
+                        : `(${formatIDR(promo.value)})`}
+                      MAX {formatIDR(promo.max_discount)}
+                    </span>
+                    <span>- {formatIDR(promo.price)}</span>
+                  </div>
+                ))}
+
                 <div className="flex justify-between text-sm">
-                  <span className="text-default-500">Pajak (PPN 11%)</span>
-                  <span>Rp {(total * 0.11).toLocaleString()}</span>
+                  <span className="text-gray-500">
+                    Pajak (PPN {formatNumber(detail.ppn_percent)}%)
+                  </span>
+                  <span>{formatIDR(detail.ppn_amount)}</span>
                 </div>
                 <Divider className="my-2" />
                 <div className="flex justify-between items-center">
-                  <span className="font-black text-[#0B1C39]">TOTAL BAYAR</span>
+                  <span className="font-black text-gray-500">TOTAL BAYAR</span>
                   <span className="text-xl font-black text-danger">
-                    Rp {(total - total * 0.1 + total * 0.11).toLocaleString()}
+                    {formatIDR(detail.grand_total)}
                   </span>
                 </div>
               </div>
@@ -202,11 +236,12 @@ export default function ServiceDetailModal({
                 <h5 className="text-sm font-bold text-warning-700 flex items-center gap-2">
                   <FileText size={16} /> Catatan Teknisi
                 </h5>
-                <p className="text-sm text-default-600 mt-1 italic">
-                  &quot;Kampas rem depan sudah mulai tipis (sisa 30%).
-                  Disarankan ganti pada kunjungan servis berikutnya atau sekitar
-                  3.000 KM lagi.&quot;
-                </p>
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html: detail.next_sugestion || "",
+                  }}
+                  className="text-sm text-default-600 mt-1 italic"
+                />
               </div>
             </ModalBody>
 
@@ -221,15 +256,33 @@ export default function ServiceDetailModal({
               </Button>
               <Button
                 color="primary"
+                isLoading={printLoading}
                 startContent={<Printer size={18} />}
                 variant="flat"
+                onPress={() =>
+                  handleDownload(
+                    `/invoices/${detail.id}`,
+                    detail.trx_no,
+                    true,
+                    setPrintLoading,
+                  )
+                }
               >
                 Cetak Invoice
               </Button>
               <Button
                 className="font-bold shadow-lg shadow-danger/20"
                 color="danger"
+                isLoading={printLoading}
                 startContent={<Download size={18} />}
+                onPress={() =>
+                  handleDownload(
+                    `/invoices/${detail.id}`,
+                    detail.trx_no,
+                    false,
+                    setPrintLoading,
+                  )
+                }
               >
                 Download PDF
               </Button>
