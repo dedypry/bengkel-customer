@@ -14,6 +14,8 @@ import storage from "redux-persist/lib/storage";
 import auth from "./features/auth/auth-slice";
 import region from "./features/region/region-slice";
 import wo from "./features/wo/wo-slice";
+import booking from "./features/booking/booking-slice";
+import brands from "./features/brand/brand-slice";
 
 const persistedAuthReducer = persistReducer({ key: "auth", storage }, auth);
 
@@ -22,6 +24,8 @@ export const store = configureStore({
     auth: persistedAuthReducer,
     region,
     wo,
+    booking,
+    brands,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

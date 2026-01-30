@@ -30,7 +30,6 @@ interface Props {
   data?: IVehicle;
 }
 export default function AddVehicleModal({ isOpen, setOpen, data }: Props) {
-  // Hook untuk kontrol Modal
   const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
@@ -70,13 +69,7 @@ export default function AddVehicleModal({ isOpen, setOpen, data }: Props) {
 
   return (
     <>
-      <Modal
-        backdrop="blur"
-        isOpen={isOpen}
-        scrollBehavior="inside"
-        size="3xl"
-        onOpenChange={setOpen}
-      >
+      <Modal backdrop="blur" isOpen={isOpen} size="3xl" onOpenChange={setOpen}>
         <ModalContent>
           {(onClose) => (
             <form onSubmit={handleSubmit(onSubmit)}>

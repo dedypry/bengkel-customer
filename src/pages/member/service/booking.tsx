@@ -12,6 +12,7 @@ import {
   SelectItem,
   Textarea,
   Divider,
+  Avatar,
 } from "@heroui/react";
 import {
   CalendarDays,
@@ -19,16 +20,19 @@ import {
   Toolbox,
   CarFront,
   CalendarCheck,
+  Building,
 } from "lucide-react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import dayjs from "dayjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { BookingFormValues, bookingSchema } from "./schema";
 
 import CustomDatePicker from "@/components/forms/date-picker";
 import { http } from "@/utils/libs/axios";
 import { notify, notifyError } from "@/utils/helpers/notify";
+import { getBrand } from "@/stores/features/brand/brand-action";
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 
 interface BookingModalProps {
   vehicles: any[]; // Data kendaraan user dari database
@@ -37,7 +41,12 @@ interface BookingModalProps {
 export default function BookingModal({ vehicles }: BookingModalProps) {
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [loading, setLoading] = useState(false);
+  const { brands } = useAppSelector((state) => state.brands);
+  const dispatch = useAppDispatch();
 
+  useEffect(() => {
+    dispatch(getBrand());
+  }, []);
   const {
     control,
     register,
@@ -101,26 +110,57 @@ export default function BookingModal({ vehicles }: BookingModalProps) {
               <ModalBody>
                 <div className="space-y-6 py-2">
                   {/* Pilih Kendaraan */}
-                  <Select
-                    {...register("vehicle_id")}
-                    errorMessage={errors.vehicle_id?.message}
-                    isInvalid={!!errors.vehicle_id}
-                    label="Kendaraan"
-                    labelPlacement="outside"
-                    placeholder="Pilih kendaraan Anda"
-                    startContent={
-                      <CarFront className="text-default-400" size={18} />
-                    }
-                    variant="bordered"
-                  >
-                    {vehicles.map((v) => (
-                      <SelectItem key={v.id} textValue={v.plate_number}>
-                        {v.brand} {v.model} ({v.plate_number})
-                      </SelectItem>
-                    ))}
-                  </Select>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Select
+                      {...register("vehicle_id")}
+                      errorMessage={errors.vehicle_id?.message}
+                      isInvalid={!!errors.vehicle_id}
+                      label="Kendaraan"
+                      labelPlacement="outside"
+                      placeholder="Pilih kendaraan Anda"
+                      startContent={
+                        <CarFront className="text-default-400" size={18} />
+                      }
+                      variant="bordered"
+                    >
+                      {vehicles.map((v) => (
+                        <SelectItem key={v.id} textValue={v.plate_number}>
+                          {v.brand} {v.model} ({v.plate_number})
+                        </SelectItem>
+                      ))}
+                    </Select>
+                    <Select
+                      {...register("vehicle_id")}
+                      errorMessage={errors.vehicle_id?.message}
+                      isInvalid={!!errors.vehicle_id}
+                      label="Cabang"
+                      labelPlacement="outside"
+                      placeholder="Pilih Cabang Terdekat"
+                      startContent={
+                        <Building className="text-default-400" size={18} />
+                      }
+                      variant="bordered"
+                    >
+                      {brands.map((v) => (
+                        <SelectItem key={v.id} textValue={v.id.toString()}>
+                          <div className="flex gap-2 items-center">
+                            <Avatar
+                              alt={v.name}
+                              className="shrink-0"
+                              size="sm"
+                              src={v.logo_url}
+                            />
+                            <div className="flex flex-col">
+                              <span className="text-small">{v.name}</span>
+                              <span className="text-tiny text-gray-400">
+                                {v.address?.title || v.phone_number}
+                              </span>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </Select>
                     <Controller
                       control={control}
                       name="booking_date"

@@ -1,9 +1,10 @@
 import { Card, CardBody, Tabs, Tab } from "@heroui/react";
-import { Plus, Car, ChevronRight } from "lucide-react";
+import { Plus, Car, ChevronRight, CalendarDays } from "lucide-react";
 import { useState } from "react";
 
 import AddVehicleModal from "./add-vehicle";
 import BookingModal from "./booking";
+import BookingList from "./booking-list";
 
 import { useAppSelector } from "@/stores/hooks";
 import { IVehicle } from "@/utils/interfaces/IUser";
@@ -12,6 +13,7 @@ export default function MemberServicePage() {
   const { user } = useAppSelector((state) => state.auth);
   const [modalAdd, setModalAdd] = useState(false);
   const [data, setData] = useState<IVehicle>();
+
 
   return (
     <div className="flex flex-col gap-6">
@@ -42,7 +44,8 @@ export default function MemberServicePage() {
             "gap-6 w-full relative rounded-none p-0 border-b border-divider",
           cursor: "w-full bg-danger",
           tab: "max-w-fit px-0 h-12",
-          tabContent: "group-data-[selected=true]:text-danger font-bold",
+          tabContent:
+            "group-data-[selected=true]:text-danger font-bold text-gray-500",
         }}
         color="danger"
         variant="underlined"
@@ -109,6 +112,18 @@ export default function MemberServicePage() {
               </CardBody>
             </Card>
           </div>
+        </Tab>
+
+        <Tab
+          key="booking-list"
+          title={
+            <div className="flex items-center space-x-2">
+              <CalendarDays size={18} />
+              <span>Jadwal Booking</span>
+            </div>
+          }
+        >
+          <BookingList />
         </Tab>
       </Tabs>
     </div>
