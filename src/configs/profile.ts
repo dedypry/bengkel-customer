@@ -1,3 +1,3 @@
 export const profile = {
-  company: "Honda Clinic Pradana",
+  company: "Pradana Auto Care",
 };

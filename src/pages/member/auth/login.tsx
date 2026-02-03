@@ -97,8 +97,8 @@ export default function MemberLogin() {
                 Member <span className="text-danger">Login</span>
               </h1>
               <p className="text-gray-500 text-sm mt-2 text-center">
-                Masukkan nomor telepon Anda yang terdaftar sebagai member Honda
-                Clinik Pradana.
+                Masukkan nomor telepon Anda yang terdaftar sebagai member
+                PRADANA AUTO CARE.
               </p>
             </div>
 
@@ -227,7 +227,7 @@ export default function MemberLogin() {
 
         {/* Ornamen Industri Bawah */}
         <div className="absolute bottom-4 right-4 text-white/5 font-black text-6xl select-none pointer-events-none uppercase italic">
-          HONDA CLINIK PRADANA
+          PRADANA AUTO CARE
         </div>
       </div>
     </GuestGuard>

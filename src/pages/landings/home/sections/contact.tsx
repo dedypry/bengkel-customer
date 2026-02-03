@@ -18,7 +18,7 @@ export default function ContactSection() {
     {
       icon: <Mail className="text-danger" size={24} />,
       title: "Email Support",
-      detail: "info@hondaclinikpradana.com",
+      detail: "info@pradanaautocare.id",
     },
     {
       icon: <Clock className="text-danger" size={24} />,

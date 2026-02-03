@@ -244,7 +244,7 @@ export default function PhoneLogin() {
 
         {/* Ornamen Industri Bawah */}
         <div className="absolute bottom-4 right-4 text-white/5 font-black text-6xl select-none pointer-events-none uppercase italic">
-          HONDA CLINIK PRADANA
+          PRADANA AUTO CARE
         </div>
       </div>
     </GuestGuard>

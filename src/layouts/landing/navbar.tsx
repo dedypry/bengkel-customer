@@ -177,11 +177,11 @@ export default function NavbarCustom() {
           <Link className="flex items-center gap-2 cursor-pointer" href="/">
             <div className="bg-danger p-1.5 rounded-sm">
               <span className="text-white font-black text-xl italic leading-none">
-                HCP
+                PAC
               </span>
             </div>
             <p className="font-black text-2xl text-[#0B1C39] tracking-tighter uppercase">
-              Honda <span className="text-danger">Clinik</span> Pradana
+              Pradana <span className="text-danger">Auto</span> Care
             </p>
           </Link>
         </NavbarBrand>
