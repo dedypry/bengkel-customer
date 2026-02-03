@@ -21,8 +21,8 @@ const configs: IConfigs = {
     gallery: "http://127.0.0.1:9876",
   },
   production: {
-    front: "https://bengkel.dedypry.site",
-    api: "https://api-bengkel.dedypry.site",
+    front: "https://pradanaautocare.id",
+    api: "https://api.pradanaautocare.id",
     socket: "https://socket.dedypry.site",
     gallery: "https://gallery.dedypry.site",
   },
