@@ -1,5 +1,11 @@
-import { Card, CardBody, Tabs, Tab } from "@heroui/react";
-import { Plus, Car, ChevronRight, CalendarDays } from "lucide-react";
+import { Card, CardBody, Tabs, Tab, Button } from "@heroui/react";
+import {
+  Plus,
+  Car,
+  ChevronRight,
+  CalendarDays,
+  CalendarCheck,
+} from "lucide-react";
 import { useState } from "react";
 
 import AddVehicleModal from "./add-vehicle";
@@ -12,12 +18,13 @@ import { IVehicle } from "@/utils/interfaces/IUser";
 export default function MemberServicePage() {
   const { user } = useAppSelector((state) => state.auth);
   const [modalAdd, setModalAdd] = useState(false);
+  const [bookingAdd, setBookingAdd] = useState(false);
   const [data, setData] = useState<IVehicle>();
-
 
   return (
     <div className="flex flex-col gap-6">
       <AddVehicleModal data={data} isOpen={modalAdd} setOpen={setModalAdd} />
+      <BookingModal isOpen={bookingAdd} setOpen={setBookingAdd} />
       {/* Header Section */}
       <div className="flex justify-between items-end">
         <div>
@@ -26,15 +33,15 @@ export default function MemberServicePage() {
             Kelola kendaraan dan jadwal perawatan Anda.
           </p>
         </div>
-        <BookingModal vehicles={user?.vehicles || []} />
-        {/* <Button
-          className="font-bold uppercase tracking-wider"
+        <Button
+          className="font-bold"
           color="danger"
-          startContent={<Plus size={18} />}
-          onPress={onOpen}
+          startContent={<CalendarCheck size={20} />}
+          variant="shadow"
+          onPress={() => setBookingAdd(true)}
         >
-          Booking Servis
-        </Button> */}
+          Booking Servis Sekarang
+        </Button>
       </div>
 
       <Tabs

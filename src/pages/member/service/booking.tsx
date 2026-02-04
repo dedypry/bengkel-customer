@@ -7,21 +7,13 @@ import {
   ModalBody,
   ModalFooter,
   Button,
-  useDisclosure,
   Select,
   SelectItem,
   Textarea,
   Divider,
   Avatar,
 } from "@heroui/react";
-import {
-  CalendarDays,
-  Clock,
-  Toolbox,
-  CarFront,
-  CalendarCheck,
-  Building,
-} from "lucide-react";
+import { CalendarDays, Clock, Toolbox, CarFront, Building } from "lucide-react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -35,13 +27,14 @@ import { getBrand } from "@/stores/features/brand/brand-action";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 
 interface BookingModalProps {
-  vehicles: any[]; // Data kendaraan user dari database
+  isOpen: boolean;
+  setOpen: (val: boolean) => void;
 }
 
-export default function BookingModal({ vehicles }: BookingModalProps) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-  const [loading, setLoading] = useState(false);
+export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
+  const { user } = useAppSelector((state) => state.auth);
   const { brands } = useAppSelector((state) => state.brands);
+  const [loading, setLoading] = useState(false);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -69,7 +62,7 @@ export default function BookingModal({ vehicles }: BookingModalProps) {
       .then(({ data }) => {
         notify(data.message);
         reset();
-        onClose();
+        setOpen(false);
       })
       .catch((err) => notifyError(err))
       .finally(() => setLoading(false));
@@ -77,23 +70,12 @@ export default function BookingModal({ vehicles }: BookingModalProps) {
 
   return (
     <>
-      {/* Trigger Button */}
-      <Button
-        className="font-bold"
-        color="danger"
-        startContent={<CalendarCheck size={20} />}
-        variant="shadow"
-        onPress={onOpen}
-      >
-        Booking Servis Sekarang
-      </Button>
-
       <Modal
         backdrop="blur"
         isOpen={isOpen}
         scrollBehavior="inside"
         size="2xl"
-        onOpenChange={onOpenChange}
+        onOpenChange={setOpen}
       >
         <ModalContent>
           {(onClose) => (
@@ -124,16 +106,16 @@ export default function BookingModal({ vehicles }: BookingModalProps) {
                       }
                       variant="bordered"
                     >
-                      {vehicles.map((v) => (
+                      {(user?.vehicles || []).map((v) => (
                         <SelectItem key={v.id} textValue={v.plate_number}>
                           {v.brand} {v.model} ({v.plate_number})
                         </SelectItem>
                       ))}
                     </Select>
                     <Select
-                      {...register("vehicle_id")}
-                      errorMessage={errors.vehicle_id?.message}
-                      isInvalid={!!errors.vehicle_id}
+                      {...register("branch_id")}
+                      errorMessage={errors.branch_id?.message}
+                      isInvalid={!!errors.branch_id}
                       label="Cabang"
                       labelPlacement="outside"
                       placeholder="Pilih Cabang Terdekat"
@@ -143,7 +125,7 @@ export default function BookingModal({ vehicles }: BookingModalProps) {
                       variant="bordered"
                     >
                       {brands.map((v) => (
-                        <SelectItem key={v.id} textValue={v.id.toString()}>
+                        <SelectItem key={v.id} textValue={v.name}>
                           <div className="flex gap-2 items-center">
                             <Avatar
                               alt={v.name}

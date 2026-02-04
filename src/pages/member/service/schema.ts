@@ -20,6 +20,7 @@ export type VehicleFormValues = z.infer<typeof vehicleSchema>;
 export const bookingSchema = z.object({
   id: z.number().optional(),
   vehicle_id: z.string().min(1, "Silahkan pilih kendaraan"),
+  branch_id: z.string().min(1, "Silahkan pilih Cabang"),
   booking_date: z.string().min(1, "Tanggal booking wajib diisi"),
   booking_time: z.string().min(1, "Jam booking wajib diisi"),
   service_type: z.string().min(1, "Pilih jenis servis"),

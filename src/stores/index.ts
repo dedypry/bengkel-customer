@@ -16,8 +16,11 @@ import region from "./features/region/region-slice";
 import wo from "./features/wo/wo-slice";
 import booking from "./features/booking/booking-slice";
 import brands from "./features/brand/brand-slice";
+import dashboard from "./features/dashboard/dashboard-slice";
+import ai from "./features/ai/ai-slice";
 
 const persistedAuthReducer = persistReducer({ key: "auth", storage }, auth);
+const persistedChatReducer = persistReducer({ key: "chat", storage }, ai);
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +29,8 @@ export const store = configureStore({
     wo,
     booking,
     brands,
+    dashboard,
+    ai: persistedChatReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
