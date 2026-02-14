@@ -35,5 +35,5 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.REMOTE_PORT }}
-          source: "dist/*"
-          target: "/www/wwwroot/pradanaautocare.id"
+          source: "pradanaautocare.id/*"
+          target: "/www/wwwroot"
