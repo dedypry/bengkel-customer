@@ -138,7 +138,7 @@ export default function NavbarCustom() {
             <Phone className="text-danger" size={16} />
             <p className="text-sm font-bold text-[#0B1C39]">{profile.phone}</p>
           </div>
-          {/* <div className="flex gap-3">
+          <div className="flex gap-3">
             <Link className="text-gray-500 hover:text-danger" href="#">
               <Facebook size={16} />
             </Link>
@@ -148,7 +148,7 @@ export default function NavbarCustom() {
             <Link className="text-gray-500 hover:text-danger" href="#">
               <Twitter size={16} />
             </Link>
-          </div> */}
+          </div>
         </div>
       </div>
 
