@@ -75,11 +75,11 @@ export default function DashboardPage() {
           onPress={() => setQuestion(true)}
         >
           <CardBody className="flex flex-row items-center gap-4">
-            <div className="p-3 bg-indigo-600 rounded-lg text-white shadow-md shadow-indigo-200">
+            <div className="p-3 bg-primary rounded-lg text-white shadow-md shadow-indigo-200">
               <Bot size={24} /> {/* Pastikan import Bot dari lucide-react */}
             </div>
             <div className="flex-1">
-              <p className="text-xs uppercase text-indigo-600 font-bold">
+              <p className="text-xs uppercase text-primary font-bold">
                 Tanya AI
               </p>
               <h3 className="text-sm font-bold text-[#0B1C39] leading-tight">

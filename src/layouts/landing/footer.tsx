@@ -1,4 +1,4 @@
-import { Button, Input, Link } from "@heroui/react";
+import { Button, Image, Input, Link } from "@heroui/react";
 import {
   MapPin,
   Phone,
@@ -12,15 +12,9 @@ import {
 
 import { BackToTop } from "./back-to-top";
 
-export default function Footer() {
-  const services = [
-    { name: "Uji Diagnostik", href: "#" },
-    { name: "Servis Mesin", href: "#" },
-    { name: "Ganti Ban", href: "#" },
-    { name: "Ganti Oli", href: "#" },
-    { name: "Pembersihan Vakum", href: "#" },
-  ];
+import { profile } from "@/configs/profile";
 
+export default function Footer() {
   const socialLinks = [
     { icon: <Twitter size={18} />, href: "#" },
     { icon: <Facebook size={18} />, href: "#" },
@@ -34,7 +28,7 @@ export default function Footer() {
       <div
         className="absolute inset-0 z-0 opacity-10 bg-cover bg-center pointer-events-none"
         style={{
-          backgroundImage: "url('/img/carousel-bg-1.jpg')",
+          backgroundImage: "url('/pradana-5.jpg')",
         }}
       />
 
@@ -46,15 +40,15 @@ export default function Footer() {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-3 text-gray-300">
                 <MapPin className="text-white mt-1 shrink-0" size={20} />
-                <p>Jl. Industri Raya No. 123, Jakarta, Indonesia</p>
+                <p>{profile.address}</p>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Phone className="text-white shrink-0" size={20} />
-                <p>+62 21 345 6789</p>
+                <p>{profile.phone}</p>
               </div>
               <div className="flex items-center gap-3 text-gray-300">
                 <Mail className="text-white shrink-0" size={20} />
-                <p>info@carserv.com</p>
+                <p>{profile.email}</p>
               </div>
             </div>
             {/* Social Media */}
@@ -76,12 +70,12 @@ export default function Footer() {
             <h3 className="text-2xl font-bold mb-6">Jam Operasional</h3>
             <div className="flex flex-col gap-4">
               <div>
-                <p className="font-bold text-lg">Senin - Jumat:</p>
-                <p className="text-gray-300">09.00 AM - 09.00 PM</p>
+                <p className="font-bold text-lg">Senin - Sabtu:</p>
+                <p className="text-gray-300">08.30 - 17.00</p>
               </div>
               <div>
-                <p className="font-bold text-lg">Sabtu - Minggu:</p>
-                <p className="text-gray-300">09.00 AM - 12.00 PM</p>
+                <p className="font-bold text-lg">Minggu:</p>
+                <p className="text-gray-300">09.00 - 16.00</p>
               </div>
             </div>
           </div>
@@ -90,7 +84,7 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-bold mb-6">Layanan Kami</h3>
             <div className="flex flex-col gap-3">
-              {services.map((service, index) => (
+              {profile.services.map((service, index) => (
                 <Link
                   key={index}
                   className="group flex items-center gap-2 text-gray-300 hover:text-white transition-colors"
@@ -171,6 +165,21 @@ export default function Footer() {
       </div>
 
       {/* Back to Top Button */}
+      <div className="fixed bottom-7 z-50 right-22">
+        <a
+          href={`https://wa.me/${profile.phone}?text=Halo%20Admin,%20saya%20ingin%20bertanya%20tentang...`}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <Image
+            alt="WhatsApp Contact"
+            className="cursor-pointer hover:scale-110 transition-transform"
+            height={40}
+            src="/wa.png"
+            width={40}
+          />
+        </a>
+      </div>
       <BackToTop />
     </footer>
   );

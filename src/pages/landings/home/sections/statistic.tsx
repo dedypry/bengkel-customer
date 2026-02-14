@@ -24,7 +24,7 @@ export function StatisticsSection() {
       <div
         className="absolute inset-0 bg-fixed bg-cover bg-center"
         style={{
-          backgroundImage: `url('/img/carousel-bg-1.jpg')`,
+          backgroundImage: `url('/pradana-2.jpg')`,
         }}
       >
         <div className="absolute inset-0 bg-[#0B1C39]/80" />

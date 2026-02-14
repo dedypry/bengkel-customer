@@ -13,7 +13,7 @@ import {
   Divider,
   Avatar,
 } from "@heroui/react";
-import { CalendarDays, Clock, Toolbox, CarFront, Building } from "lucide-react";
+import { CalendarDays, Clock, CarFront, Building } from "lucide-react";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
@@ -25,6 +25,7 @@ import { http } from "@/utils/libs/axios";
 import { notify, notifyError } from "@/utils/helpers/notify";
 import { getBrand } from "@/stores/features/brand/brand-action";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import { profile } from "@/configs/profile";
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -40,9 +41,9 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
   useEffect(() => {
     dispatch(getBrand());
   }, []);
+
   const {
     control,
-    register,
     handleSubmit,
     reset,
     formState: { errors },
@@ -55,7 +56,6 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
   });
 
   const onSubmit = async (data: BookingFormValues) => {
-    console.log("Submitting Booking:", data);
     setLoading(true);
     http
       .post("/bookings", data)
@@ -73,7 +73,7 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
       <Modal
         backdrop="blur"
         isOpen={isOpen}
-        scrollBehavior="inside"
+        scrollBehavior="outside"
         size="2xl"
         onOpenChange={setOpen}
       >
@@ -94,55 +94,78 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
                   {/* Pilih Kendaraan */}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <Select
-                      {...register("vehicle_id")}
-                      errorMessage={errors.vehicle_id?.message}
-                      isInvalid={!!errors.vehicle_id}
-                      label="Kendaraan"
-                      labelPlacement="outside"
-                      placeholder="Pilih kendaraan Anda"
-                      startContent={
-                        <CarFront className="text-default-400" size={18} />
-                      }
-                      variant="bordered"
-                    >
-                      {(user?.vehicles || []).map((v) => (
-                        <SelectItem key={v.id} textValue={v.plate_number}>
-                          {v.brand} {v.model} ({v.plate_number})
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    <Select
-                      {...register("branch_id")}
-                      errorMessage={errors.branch_id?.message}
-                      isInvalid={!!errors.branch_id}
-                      label="Cabang"
-                      labelPlacement="outside"
-                      placeholder="Pilih Cabang Terdekat"
-                      startContent={
-                        <Building className="text-default-400" size={18} />
-                      }
-                      variant="bordered"
-                    >
-                      {brands.map((v) => (
-                        <SelectItem key={v.id} textValue={v.name}>
-                          <div className="flex gap-2 items-center">
-                            <Avatar
-                              alt={v.name}
-                              className="shrink-0"
-                              size="sm"
-                              src={v.logo_url}
-                            />
-                            <div className="flex flex-col">
-                              <span className="text-small">{v.name}</span>
-                              <span className="text-tiny text-gray-400">
-                                {v.address?.title || v.phone_number}
-                              </span>
-                            </div>
-                          </div>
-                        </SelectItem>
-                      ))}
-                    </Select>
+                    <Controller
+                      control={control}
+                      name="vehicle_id"
+                      render={({ field }) => (
+                        <Select
+                          errorMessage={errors.vehicle_id?.message}
+                          isInvalid={!!errors.vehicle_id}
+                          label="Kendaraan"
+                          labelPlacement="outside"
+                          placeholder="Pilih kendaraan Anda"
+                          selectedKeys={[field.value]}
+                          startContent={
+                            <CarFront className="text-default-400" size={18} />
+                          }
+                          variant="bordered"
+                          onSelectionChange={(key) => {
+                            const val = Array.from(key)[0];
+
+                            field.onChange(val);
+                          }}
+                        >
+                          {(user?.vehicles || []).map((v) => (
+                            <SelectItem key={v.id} textValue={v.plate_number}>
+                              {v.brand} {v.model} ({v.plate_number})
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="branch_id"
+                      render={({ field }) => (
+                        <Select
+                          errorMessage={errors.branch_id?.message}
+                          isInvalid={!!errors.branch_id}
+                          label="Cabang"
+                          labelPlacement="outside"
+                          placeholder="Pilih Cabang Terdekat"
+                          selectedKeys={[field.value]}
+                          startContent={
+                            <Building className="text-default-400" size={18} />
+                          }
+                          variant="bordered"
+                          onSelectionChange={(key) => {
+                            const val = Array.from(key)[0];
+
+                            field.onChange(val);
+                          }}
+                        >
+                          {brands.map((v) => (
+                            <SelectItem key={v.id} textValue={v.name}>
+                              <div className="flex gap-2 items-center">
+                                <Avatar
+                                  alt={v.name}
+                                  className="shrink-0"
+                                  size="sm"
+                                  src={v.logo_url}
+                                />
+                                <div className="flex flex-col">
+                                  <span className="text-small">{v.name}</span>
+                                  <span className="text-tiny text-gray-400">
+                                    {v.address?.title || v.phone_number}
+                                  </span>
+                                </div>
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
                     <Controller
                       control={control}
                       name="booking_date"
@@ -159,54 +182,78 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
                         />
                       )}
                     />
-                    <Select
-                      {...register("booking_time")}
-                      errorMessage={errors.booking_time?.message}
-                      isInvalid={!!errors.booking_time}
-                      label="Jam"
-                      labelPlacement="outside"
-                      placeholder="Pilih Slot"
-                      startContent={
-                        <Clock className="text-default-400" size={18} />
-                      }
-                      variant="bordered"
-                    >
-                      <SelectItem key="08:00">08:00 WIB</SelectItem>
-                      <SelectItem key="10:00">10:00 WIB</SelectItem>
-                      <SelectItem key="13:00">13:00 WIB</SelectItem>
-                      <SelectItem key="15:00">15:00 WIB</SelectItem>
-                    </Select>
+                    <Controller
+                      control={control}
+                      name="booking_time"
+                      render={({ field, fieldState }) => (
+                        <Select
+                          errorMessage={fieldState.error?.message}
+                          isInvalid={!!fieldState.error}
+                          label="Jam"
+                          labelPlacement="outside"
+                          placeholder="Pilih Slot"
+                          selectedKeys={[field.value]}
+                          startContent={
+                            <Clock className="text-default-400" size={18} />
+                          }
+                          variant="bordered"
+                        >
+                          {profile.times.map((time) => (
+                            <SelectItem key={time} textValue={time}>
+                              {time} WIB
+                            </SelectItem>
+                          ))}
+                        </Select>
+                      )}
+                    />
                   </div>
 
                   <Divider className="mb-10" />
 
-                  <Select
-                    {...register("service_type")}
-                    errorMessage={errors.service_type?.message}
-                    isInvalid={!!errors.service_type}
-                    label="Kategori Servis"
-                    labelPlacement="outside"
-                    placeholder="Pilih tipe servis"
-                    startContent={
-                      <Toolbox className="text-default-400" size={18} />
-                    }
-                    variant="bordered"
-                  >
-                    <SelectItem key="Ganti Oli">Ganti Oli</SelectItem>
-                    <SelectItem key="Service Berkala">
-                      Service Berkala
-                    </SelectItem>
-                    <SelectItem key="General Repair">Perbaikan Umum</SelectItem>
-                  </Select>
+                  <Controller
+                    control={control}
+                    name="service_type"
+                    render={({ field, fieldState }) => (
+                      <Select
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        label="Jenis Layanan"
+                        labelPlacement="outside"
+                        placeholder="Pilih Layanan"
+                        selectedKeys={[field.value]}
+                        variant="bordered"
+                        onSelectionChange={(key) => {
+                          const val = Array.from(key)[0];
 
-                  <Textarea
-                    {...register("complaint")}
-                    errorMessage={errors.complaint?.message}
-                    isInvalid={!!errors.complaint}
-                    label="Keluhan / Catatan"
-                    labelPlacement="outside"
-                    placeholder="Ceritakan keluhan kendaraan Anda..."
-                    variant="bordered"
+                          field.onChange(val);
+                        }}
+                      >
+                        {profile.services.map((service) => (
+                          <SelectItem
+                            key={service.name}
+                            textValue={service.name}
+                          >
+                            {service.name}
+                          </SelectItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name="complaint"
+                    render={({ field, fieldState }) => (
+                      <Textarea
+                        {...field}
+                        errorMessage={fieldState.error?.message}
+                        isInvalid={!!fieldState.error}
+                        label="Keluhan / Catatan"
+                        labelPlacement="outside"
+                        placeholder="Ceritakan keluhan kendaraan Anda..."
+                        variant="bordered"
+                      />
+                    )}
                   />
                 </div>
               </ModalBody>

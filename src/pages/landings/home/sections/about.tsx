@@ -32,7 +32,7 @@ export function AboutSection() {
             <img
               alt="Mekanik Ahli"
               className="w-full h-[600px] object-cover transition-transform duration-700 group-hover:scale-105"
-              src="https://brazam.s3.ap-southeast-2.amazonaws.com/3e00272f-c86e-4765-b092-d506809fe720.webp"
+              src="/pradana-1.jpg"
             />
           </div>
           {/* Badge Pengalaman */}

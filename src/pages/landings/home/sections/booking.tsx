@@ -1,12 +1,60 @@
-import { Button, Input, Select, SelectItem, Textarea } from "@heroui/react";
+import {
+  Avatar,
+  Button,
+  Input,
+  Select,
+  SelectItem,
+  Textarea,
+} from "@heroui/react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { Building, Clock } from "lucide-react";
+
+import CustomDatePicker from "@/components/forms/date-picker";
+import { profile } from "@/configs/profile";
+import {
+  BookingFormValuesLanding,
+  bookingSchemaLanding,
+} from "@/pages/member/service/schema";
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import { getBrand } from "@/stores/features/brand/brand-action";
+import { http } from "@/utils/libs/axios";
+import { notify, notifyError } from "@/utils/helpers/notify";
 
 export function BookingSection() {
-  const services = [
-    { label: "Uji Diagnostik", value: "diagnostic" },
-    { label: "Servis Mesin", value: "engine" },
-    { label: "Ganti Ban", value: "tires" },
-    { label: "Ganti Oli", value: "oil" },
-  ];
+  const { brands } = useAppSelector((state) => state.brands);
+  const dispatch = useAppDispatch();
+  const [isLoading, setLoading] = useState(false);
+
+  useEffect(() => {
+    dispatch(getBrand());
+  }, []);
+
+  const { control, handleSubmit, reset } = useForm<BookingFormValuesLanding>({
+    resolver: zodResolver(bookingSchemaLanding),
+    mode: "onChange",
+    defaultValues: {
+      booking_time: "08:00",
+      booking_date: dayjs().add(1, "day").toISOString(),
+    },
+  });
+
+  function onSubmit(data: BookingFormValuesLanding) {
+    setLoading(true);
+    http
+      .post("/bookings/landing", data)
+      .then(({ data }) => {
+        notify(data.message);
+        reset();
+      })
+      .catch((err) => notifyError(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  }
 
   return (
     <section
@@ -19,7 +67,7 @@ export function BookingSection() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://brazam.s3.ap-southeast-2.amazonaws.com/3ef7ff06-4cd5-44e7-8775-f5a1d8cf2ba3.webp')`,
+            backgroundImage: `url('/pradana-3.jpg')`,
           }}
         >
           {/* Overlay Gelap */}
@@ -43,52 +91,194 @@ export function BookingSection() {
       <div className="w-full md:w-1/2 bg-danger p-12 lg:p-20 flex flex-col justify-center">
         <h3 className="text-white text-4xl font-black mb-8">Booking Layanan</h3>
 
-        <form className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            className="bg-white"
-            placeholder="Nama Anda"
-            radius="none"
-            type="text"
-            variant="flat"
+        <form
+          className="grid grid-cols-1 sm:grid-cols-2 gap-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <Controller
+            control={control}
+            name="branch_id"
+            render={({ field, fieldState }) => (
+              <Select
+                isInvalid={!!fieldState.error}
+                label="Cabang"
+                placeholder="Pilih Cabang Terdekat"
+                selectedKeys={[field.value]}
+                startContent={
+                  <Building className="text-default-400" size={18} />
+                }
+                variant="flat"
+                onSelectionChange={(key) => {
+                  const val = Array.from(key)[0];
+
+                  field.onChange(val);
+                }}
+              >
+                {brands.map((v) => (
+                  <SelectItem key={v.id} textValue={v.name}>
+                    <div className="flex gap-2 items-center">
+                      <Avatar
+                        alt={v.name}
+                        className="shrink-0"
+                        size="sm"
+                        src={v.logo_url}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-small">{v.name}</span>
+                        <span className="text-tiny text-gray-400">
+                          {v.address?.title || v.phone_number}
+                        </span>
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
           />
-          <Input
-            className="bg-white"
-            placeholder="Email Anda"
-            radius="none"
-            type="email"
-            variant="flat"
+          <Controller
+            control={control}
+            name="name"
+            render={({ field, fieldState }) => (
+              <Input
+                {...field}
+                isInvalid={!!fieldState.error}
+                label="Nama"
+                placeholder="Nama Anda"
+                variant="flat"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field, fieldState }) => (
+              <Input
+                {...field}
+                isInvalid={!!fieldState.error}
+                label="No. Whatsapp"
+                placeholder="Nomor Whatsapp"
+                variant="flat"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <Input
+                {...field}
+                isInvalid={!!fieldState.error}
+                label="Email"
+                placeholder="Email Anda"
+                variant="flat"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="service_type"
+            render={({ field, fieldState }) => (
+              <Select
+                isInvalid={!!fieldState.error}
+                label="Jenis Layanan"
+                placeholder="Pilih Layanan"
+                selectedKeys={[field.value]}
+                variant="flat"
+                onSelectionChange={(key) => {
+                  const val = Array.from(key)[0];
+
+                  field.onChange(val);
+                }}
+              >
+                {profile.services.map((service) => (
+                  <SelectItem key={service.name} textValue={service.name}>
+                    {service.name}
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
           />
 
-          <Select
-            className="bg-white"
-            placeholder="Pilih Layanan"
-            radius="none"
-            variant="flat"
+          <Controller
+            control={control}
+            name="booking_date"
+            render={({ field, fieldState }) => (
+              <CustomDatePicker
+                isInvalid={!!fieldState.error}
+                label="Tanggal Kedatangan"
+                minValue={today(getLocalTimeZone()).add({ days: 1 })}
+                value={field.value as any}
+                variant="flat"
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="booking_time"
+            render={({ field, fieldState }) => (
+              <Select
+                isInvalid={!!fieldState.error}
+                label="Jam"
+                placeholder="Pilih Slot"
+                selectedKeys={[field.value]}
+                startContent={<Clock className="text-default-400" size={18} />}
+                variant="flat"
+              >
+                {profile.times.map((time) => (
+                  <SelectItem key={time} textValue={time}>
+                    {time} WIB
+                  </SelectItem>
+                ))}
+              </Select>
+            )}
+          />
+          <Controller
+            control={control}
+            name="vehicle_type"
+            render={({ field, fieldState }) => (
+              <Input
+                {...field}
+                isInvalid={!!fieldState.error}
+                label="Jenis Kendaraan"
+                placeholder="ex: Honda BRV"
+                variant="flat"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="plate_number"
+            render={({ field, fieldState }) => (
+              <Input
+                {...field}
+                isInvalid={!!fieldState.error}
+                label="Plat No. Kendaraan"
+                placeholder="ex: B1234HH"
+                variant="flat"
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="complaint"
+            render={({ field, fieldState }) => (
+              <Textarea
+                {...field}
+                className="col-span-1 sm:col-span-2"
+                isInvalid={!!fieldState.error}
+                label="Catatan Khusus / Permintaan"
+                minRows={4}
+                variant="flat"
+              />
+            )}
+          />
+
+          <Button
+            className="col-span-1 sm:col-span-2 bg-[#0B1C39] text-white font-bold py-8 text-lg rounded-none mt-2 hover:bg-black transition-all"
+            isLoading={isLoading}
+            type="submit"
           >
-            {services.map((service) => (
-              <SelectItem key={service.value} textValue={service.value}>
-                {service.label}
-              </SelectItem>
-            ))}
-          </Select>
-
-          <Input
-            className="bg-white"
-            defaultValue="2026-01-20"
-            radius="none"
-            type="date"
-            variant="flat"
-          />
-
-          <Textarea
-            className="col-span-1 sm:col-span-2 bg-white"
-            minRows={4}
-            placeholder="Catatan Khusus / Permintaan"
-            radius="none"
-            variant="flat"
-          />
-
-          <Button className="col-span-1 sm:col-span-2 bg-[#0B1C39] text-white font-bold py-8 text-lg rounded-none mt-2 hover:bg-black transition-all">
             PESAN SEKARANG
           </Button>
         </form>

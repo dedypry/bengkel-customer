@@ -51,7 +51,7 @@ export function ServicesExplore() {
           <img
             alt="Service Detail"
             className="w-full h-full object-cover shadow-xl"
-            src="/img/service-1.jpg"
+            src="/pradana-4.jpg"
           />
         </div>
 

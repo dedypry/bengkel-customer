@@ -28,3 +28,18 @@ export const bookingSchema = z.object({
 });
 
 export type BookingFormValues = z.infer<typeof bookingSchema>;
+
+export const bookingSchemaLanding = z.object({
+  name: z.string().min(1, "Masukan nama anda"),
+  email: z.string().email().min(1, "Masukan email anda"),
+  phone: z.string().min(1, "Masukan No. HP anda"),
+  branch_id: z.string().min(1, "Silahkan pilih Cabang"),
+  booking_date: z.string().min(1, "Tanggal booking wajib diisi"),
+  booking_time: z.string().min(1, "Jam booking wajib diisi"),
+  service_type: z.string().min(1, "Pilih jenis servis"),
+  vehicle_type: z.string().min(1, "Pilih jenis kendaraan"),
+  plate_number: z.string().min(1, "Pilih jenis kendaraan"),
+  complaint: z.string().optional(),
+});
+
+export type BookingFormValuesLanding = z.infer<typeof bookingSchemaLanding>;

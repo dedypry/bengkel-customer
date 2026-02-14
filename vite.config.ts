@@ -11,6 +11,9 @@ export default defineConfig({
     port: 5173,
     host: true,
   },
+  build: {
+    outDir: "pradanaautocare.id",
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

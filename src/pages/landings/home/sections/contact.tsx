@@ -1,29 +1,63 @@
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable jsx-a11y/iframe-has-title */
-import { Button, Input, Textarea } from "@heroui/react";
-import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Clock,
+  Bot,
+  User,
+  SendHorizonal,
+} from "lucide-react";
+import { useState, useRef } from "react";
+import { Avatar, Button, Input, ScrollShadow } from "@heroui/react";
+import ReactMarkdown from "react-markdown";
+
+import { profile } from "@/configs/profile";
+import { postQuestion } from "@/stores/features/ai/ai-action";
+import { setChat } from "@/stores/features/ai/ai-slice";
+import { useAppSelector, useAppDispatch } from "@/stores/hooks";
 
 export default function ContactSection() {
+  const { chats, chatLoading } = useAppSelector((state) => state.ai);
+  const [msg, setMsg] = useState("");
+
+  const dispatch = useAppDispatch();
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  function sendMsg() {
+    dispatch(postQuestion(msg));
+    dispatch(setChat(msg));
+    setMsg("");
+    const timeout = setTimeout(scrollToBottom, 100);
+
+    return () => clearTimeout(timeout);
+  }
+
   const contactInfo = [
     {
       icon: <MapPin className="text-danger" size={24} />,
       title: "Lokasi Bengkel",
-      detail: "Jl. Industri Raya No. 123, Jakarta Pusat, Indonesia",
+      detail: profile.address,
     },
     {
       icon: <Phone className="text-danger" size={24} />,
       title: "Hubungi Kami",
-      detail: "+62 21 345 6789 / +62 812 3456 7890",
+      detail: profile.phone,
     },
     {
       icon: <Mail className="text-danger" size={24} />,
       title: "Email Support",
-      detail: "info@pradanaautocare.id",
+      detail: profile.email,
     },
     {
       icon: <Clock className="text-danger" size={24} />,
       title: "Jam Operasional",
-      detail: "Senin - Sabtu: 09.00 - 17.00 (Minggu Tutup)",
+      detail: "Senin - minggu: 08.30 - 17.00",
     },
   ];
 
@@ -63,65 +97,85 @@ export default function ContactSection() {
             </div>
 
             {/* Google Maps Placeholder */}
-            <div className="w-full h-[300px] bg-gray-200 grayscale hover:grayscale-0 transition-all duration-500 overflow-hidden shadow-inner">
+            <div className="w-full h-[300px] bg-gray-200 transition-all duration-500 overflow-hidden shadow-inner">
               <iframe
                 className="w-full h-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126935.21045233177!2d106.74603099039396!3d-6.168725899999994!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f5d2e764826d%3A0x36166cb31b038a82!2sJakarta%20Pusat%2C%20Kota%20Jakarta%20Pusat%2C%20Daerah%20Khusus%20Ibukota%20Jakarta!5e0!3m2!1sid!2sid!4v1705741000000!5m2!1sid!2sid"
+                // Pastikan menggunakan HTTPS dan parameter output=embed
+                src="https://maps.google.com/maps?q=-6.4076505,106.751639&output=embed"
               />
             </div>
           </div>
 
           {/* Kolom Kanan: Form Kontak */}
-          <div className="bg-[#0B1C39] p-8 md:p-12 shadow-2xl">
+          <div className="bg-[#0B1C39] p-8 md:p-12 shadow-2xl relative">
             <h3 className="text-3xl font-bold text-white mb-6">Kirim Pesan</h3>
-            <p className="text-gray-400 mb-8 italic">
-              Butuh konsultasi harga atau cek ketersediaan suku cadang? Silakan
-              isi formulir di bawah ini.
-            </p>
 
-            <form className="flex flex-col gap-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  className="bg-white"
-                  placeholder="Nama Lengkap"
-                  radius="none"
-                  variant="flat"
-                />
-                <Input
-                  className="bg-white"
-                  placeholder="Nomor WhatsApp"
-                  radius="none"
-                  variant="flat"
-                />
-              </div>
-              <Input
-                className="bg-white"
-                placeholder="Subjek (Contoh: Tanya Ganti Oli)"
-                radius="none"
-                variant="flat"
-              />
-              <Textarea
-                className="bg-white"
-                minRows={5}
-                placeholder="Tulis pesan Anda di sini..."
-                radius="none"
-                variant="flat"
-              />
-              <Button
-                className="bg-danger text-white font-bold py-8 text-lg group hover:bg-white hover:text-danger transition-all duration-300"
-                endContent={
-                  <Send
-                    className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform"
-                    size={20}
-                  />
+            <ScrollShadow className="flex-1 overflow-y-auto h-[600px]">
+              {chats.map((item, i) => {
+                if (!item.isMe) {
+                  return (
+                    <div key={i} className="flex justify-start gap-3 mb-4">
+                      <Avatar
+                        className="bg-cyan-100 text-cyan-600 shrink-0"
+                        icon={<Bot size={20} />}
+                      />
+                      <div className="bg-default-100 p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%]">
+                        <ReactMarkdown>{item.msg}</ReactMarkdown>
+                      </div>
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div key={i} className="flex justify-end gap-3 mb-4">
+                      <div className="bg-default-100 p-3 rounded-2xl rounded-tr-none text-sm max-w-[80%]">
+                        {item.msg}
+                      </div>
+                      <Avatar
+                        className="bg-cyan-100 text-cyan-600 shrink-0"
+                        icon={<User size={20} />}
+                      />
+                    </div>
+                  );
                 }
-                radius="none"
-              >
-                KIRIM PESAN SEKARANG
-              </Button>
-            </form>
+              })}
+
+              {chatLoading && (
+                <div className="flex justify-start gap-3 mb-4 animate-in fade-in slide-in-from-left-2 duration-300">
+                  <Avatar
+                    className="bg-cyan-100 text-cyan-600 shrink-0"
+                    icon={<Bot size={20} />}
+                  />
+                  <div className="bg-default-100 p-4 rounded-2xl rounded-tl-none flex gap-1 items-center">
+                    <span className="w-1.5 h-1.5 bg-cyan-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-1.5 h-1.5 bg-cyan-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-1.5 h-1.5 bg-cyan-600 rounded-full animate-bounce" />
+                  </div>
+                </div>
+              )}
+            </ScrollShadow>
+            <div className="absolute bottom-1 right-2 left-2">
+              <Input
+                classNames={{
+                  input: "resize-y min-h-[100px]",
+                }}
+                endContent={
+                  <Button isIconOnly variant="light" onPress={sendMsg}>
+                    <SendHorizonal />
+                  </Button>
+                }
+                placeholder="Ketik keluhan atau pertanyaan Anda di sini..."
+                value={msg}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault(); // Cegah baris baru
+                    sendMsg();
+                  }
+                }}
+                onValueChange={setMsg}
+              />
+            </div>
           </div>
         </div>
       </div>

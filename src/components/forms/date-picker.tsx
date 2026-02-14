@@ -37,8 +37,6 @@ export default function CustomDatePicker(props: DatePickerProps) {
       value={value as any}
       onChange={(val) => {
         setValue(val as any);
-        console.log("val", val?.toString());
-        // Jika ada props onChange dari luar, panggil juga
         if (props.onChange) props.onChange(val?.toString() as any);
       }}
     />

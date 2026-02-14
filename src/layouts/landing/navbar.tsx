@@ -19,6 +19,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAppSelector } from "@/stores/hooks";
+import { profile } from "@/configs/profile";
 
 export default function NavbarCustom() {
   const [activeSection, setActiveSection] = useState("home");
@@ -122,22 +123,22 @@ export default function NavbarCustom() {
           <div className="flex gap-2 items-center">
             <MapPin className="text-danger" size={16} />
             <p className="text-sm font-medium text-gray-600">
-              Jl. Industri Raya No. 123, Jakarta
+              {profile.short_address}
             </p>
           </div>
           <div className="flex gap-2 items-center border-l border-gray-300 pl-8">
             <Clock className="text-danger" size={16} />
             <p className="text-sm font-medium text-gray-600">
-              Senin - Sabtu : 09.00 - 17.00
+              Senin - Minggu : 08.30 - 17.00
             </p>
           </div>
         </div>
         <div className="flex gap-6 items-center">
           <div className="flex gap-2 items-center mr-4">
             <Phone className="text-danger" size={16} />
-            <p className="text-sm font-bold text-[#0B1C39]">+62 21 345 6789</p>
+            <p className="text-sm font-bold text-[#0B1C39]">{profile.phone}</p>
           </div>
-          <div className="flex gap-3">
+          {/* <div className="flex gap-3">
             <Link className="text-gray-500 hover:text-danger" href="#">
               <Facebook size={16} />
             </Link>
@@ -147,7 +148,7 @@ export default function NavbarCustom() {
             <Link className="text-gray-500 hover:text-danger" href="#">
               <Twitter size={16} />
             </Link>
-          </div>
+          </div> */}
         </div>
       </div>
 

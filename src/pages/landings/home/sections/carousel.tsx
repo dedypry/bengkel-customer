@@ -18,7 +18,7 @@ export default function CarouselSection() {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('/img/carousel-bg-1.jpg')`, // Ganti dengan path gambar bengkel Anda
+          backgroundImage: `url('/bg-carousel-1.jpg')`, // Ganti dengan path gambar bengkel Anda
         }}
       >
         <div className="absolute inset-0 bg-black/70" />{" "}
