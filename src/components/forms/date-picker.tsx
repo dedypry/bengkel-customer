@@ -1,44 +1,67 @@
-import { DatePicker, DatePickerProps } from "@heroui/react";
-import { useEffect, useState } from "react";
-import { parseDate, CalendarDate } from "@internationalized/date";
+/* eslint-disable import/order */
+import {
+  Input,
+  InputProps,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@heroui/react";
+import { forwardRef, useState } from "react";
+import { Calendar } from "react-date-range";
 
-export default function CustomDatePicker(props: DatePickerProps) {
-  // Fungsi helper untuk mengubah objek Date JS ke CalendarDate (format HeroUI)
-  const convertToCalendarDate = (dateInput: any): CalendarDate | null => {
-    if (!dateInput) return null;
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
+import { Calendar1Icon } from "lucide-react";
 
-    // Jika input adalah instance dari Date
-    if (dateInput instanceof Date) {
-      return new CalendarDate(
-        dateInput.getFullYear(),
-        dateInput.getMonth() + 1, // JS Month itu 0-indexed
-        dateInput.getDate(),
-      );
-    }
+import dayjs from "dayjs";
+import id from "date-fns/locale/id";
 
-    // Jika input adalah string (ISO format), gunakan parseDate
-    if (typeof dateInput === "string") {
-      return parseDate(dateInput.split("T")[0]);
-    }
-
-    return dateInput; // Return as is jika sudah sesuai format internationalized
-  };
-
-  const [value, setValue] = useState(convertToCalendarDate(props.value));
-
-  useEffect(() => {
-    setValue(convertToCalendarDate(props.value));
-  }, [props.value]);
+interface Props {
+  maxDate?: Date;
+  minDate?: Date;
+}
+function CustomDatePicker(
+  { maxDate, minDate, ...props }: Props & InputProps,
+  ref: React.Ref<HTMLInputElement>,
+) {
+  const [open, setOpen] = useState(false);
 
   return (
-    <DatePicker
+    <Input
+      ref={ref}
       {...props}
-      showMonthAndYearPickers
-      value={value as any}
-      onChange={(val) => {
-        setValue(val as any);
-        if (props.onChange) props.onChange(val?.toString() as any);
-      }}
+      readOnly
+      endContent={
+        <Popover
+          isOpen={open}
+          placement="bottom"
+          onOpenChange={(open) => setOpen(open)}
+        >
+          <PopoverTrigger>
+            <Calendar1Icon className="text-secondary-600 cursor-pointer" />
+          </PopoverTrigger>
+          <PopoverContent className="mt-3">
+            <div className="px-1 py-2">
+              <Calendar
+                color="#077fb6"
+                date={dayjs(props.value || new Date()).toDate()}
+                locale={id}
+                maxDate={maxDate}
+                minDate={minDate}
+                onChange={(e) => {
+                  if (props.onChange) {
+                    props.onChange(dayjs(e).format("YYYY-MM-DD") as any);
+                  }
+                }}
+              />
+            </div>
+          </PopoverContent>
+        </Popover>
+      }
+      value={dayjs(props.value || new Date()).format("DD MMMM YYYY")}
+      onClick={() => setOpen(true)}
     />
   );
 }
+
+export default forwardRef(CustomDatePicker);
