@@ -206,7 +206,7 @@ export function BookingSection() {
               <CustomDatePicker
                 isInvalid={!!fieldState.error}
                 label="Tanggal Kedatangan"
-                minValue={today(getLocalTimeZone()).add({ days: 1 })}
+                minDate={today(getLocalTimeZone()).add({ days: 1 }) as any}
                 value={field.value as any}
                 variant="flat"
                 onChange={field.onChange}

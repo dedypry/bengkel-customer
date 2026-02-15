@@ -175,7 +175,9 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
                           isInvalid={!!errors.booking_date}
                           label="Tanggal Kedatangan"
                           labelPlacement="outside"
-                          minValue={today(getLocalTimeZone()).add({ days: 1 })}
+                          minDate={
+                            today(getLocalTimeZone()).add({ days: 1 }) as any
+                          }
                           value={field.value as any}
                           variant="bordered"
                           onChange={field.onChange}
