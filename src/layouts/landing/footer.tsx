@@ -1,4 +1,12 @@
-import { Button, Image, Input, Link } from "@heroui/react";
+import {
+  Button,
+  Image,
+  Input,
+  Link,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@heroui/react";
 import {
   MapPin,
   Phone,
@@ -13,6 +21,7 @@ import {
 import { BackToTop } from "./back-to-top";
 
 import { profile } from "@/configs/profile";
+import ChatBoot from "@/components/chat-boot";
 
 export default function Footer() {
   const socialLinks = [
@@ -165,7 +174,25 @@ export default function Footer() {
       </div>
 
       {/* Back to Top Button */}
-      <div className="fixed bottom-7 z-50 right-22">
+      <div className="fixed bottom-7 z-50 right-22 flex gap-2">
+        <Popover placement="top-end" showArrow={true}>
+          <PopoverTrigger>
+            <div className="bg-white rounded-full">
+              <Image
+                alt="WhatsApp Contact"
+                className="cursor-pointer hover:scale-110 transition-transform"
+                height={40}
+                src="/boot.png"
+                width={40}
+              />
+            </div>
+          </PopoverTrigger>
+          <PopoverContent>
+            <div className="px-1 py-2 h-[500px] w-md">
+              <ChatBoot />
+            </div>
+          </PopoverContent>
+        </Popover>
         <a
           href={`https://wa.me/${profile.phone}?text=Halo%20Admin,%20saya%20ingin%20bertanya%20tentang...`}
           rel="noopener noreferrer"
