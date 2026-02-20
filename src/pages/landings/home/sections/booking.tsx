@@ -10,7 +10,6 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import { Building, Clock } from "lucide-react";
 
 import CustomDatePicker from "@/components/forms/date-picker";
@@ -206,7 +205,7 @@ export function BookingSection() {
               <CustomDatePicker
                 isInvalid={!!fieldState.error}
                 label="Tanggal Kedatangan"
-                minDate={today(getLocalTimeZone()).add({ days: 1 }) as any}
+                // minDate={today(getLocalTimeZone()).add({ days: 1 }) as any}
                 value={field.value as any}
                 variant="flat"
                 onChange={field.onChange}
