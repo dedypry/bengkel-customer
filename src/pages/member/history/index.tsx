@@ -41,7 +41,7 @@ export default function MemberHistoryPage() {
     dispatch(getWo(woQuery));
   }, [woQuery]);
 
-  const veh = user?.vehicles.find((v) => v.id === woQuery.vehicle_id);
+  const veh = (user?.vehicles || []).find((v) => v.id === woQuery.vehicle_id);
 
   return (
     <div className="flex flex-col gap-6">
