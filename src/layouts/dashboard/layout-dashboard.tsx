@@ -1,5 +1,5 @@
 import { Listbox, ListboxItem } from "@heroui/react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard as Dashboard,
   Wrench,
@@ -67,14 +67,13 @@ export default function LayoutDashboard() {
             {menuItems.map((item) => (
               <ListboxItem
                 key={item.href}
-                as={Link}
                 className={`${
                   pathname === item.href
                     ? "bg-danger/10 text-danger"
                     : "text-default-600"
                 } h-12`}
-                href={item.href}
                 startContent={item.icon}
+                onClick={() => navigate(item.href)}
               >
                 {item.label}
               </ListboxItem>
