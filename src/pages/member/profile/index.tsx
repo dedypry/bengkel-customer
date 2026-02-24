@@ -1,33 +1,51 @@
-import { Button, Avatar, Tabs, Tab } from "@heroui/react";
-import { User, Lock, Camera } from "lucide-react";
+import { Tabs, Tab } from "@heroui/react";
+import { User, Lock } from "lucide-react";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 
 import PersonalForm from "./personal-form";
 import ChangePassword from "./change-password";
 
 import { useAppSelector } from "@/stores/hooks";
-import { getAvatarByName } from "@/utils/helpers/global";
+import UploadAvatar from "@/components/upload-avatar";
+import { uploadFile } from "@/utils/helpers/upload-file";
+import { notify, notifyError } from "@/utils/helpers/notify";
+import { http } from "@/utils/libs/axios";
 
 export default function MemberProfilePage() {
   const { user } = useAppSelector((state) => state.auth);
+  const [file, setFile] = useState<any>();
+
+  useEffect(() => {
+    if (user?.profile) {
+      setFile(user.profile?.photo_url);
+    }
+  }, [user]);
+
+  async function updatePhotoProfile(file: File) {
+    try {
+      const photo = await uploadFile(file);
+
+      const { data } = await http.patch(`/user/photo-profile`, { photo });
+
+      notify(data.message);
+    } catch (error) {
+      notifyError(error);
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto flex flex-col gap-6">
       {/* Header Profile */}
       <div className="flex flex-col md:flex-row items-center gap-6 bg-white p-6 rounded-2xl border-1 border-divider shadow-sm">
         <div className="relative">
-          <Avatar
-            className="w-32 h-32 text-large shadow-lg"
-            src={user?.profile.photo_url || getAvatarByName(user?.name || "")}
+          <UploadAvatar
+            file={file}
+            setFile={(file) => {
+              setFile(file);
+              updatePhotoProfile(file);
+            }}
           />
-          <Button
-            isIconOnly
-            className="absolute bottom-1 right-1 bg-danger text-white border-2 border-white"
-            radius="full"
-            size="sm"
-          >
-            <Camera size={16} />
-          </Button>
         </div>
         <div className="text-center md:text-left space-y-1">
           <h1 className="text-2xl font-black text-[#0B1C39]">{user?.name}</h1>
@@ -38,9 +56,9 @@ export default function MemberProfilePage() {
             <div className="px-3 py-1 bg-success/10 text-success rounded-full text-xs font-bold">
               Verified
             </div>
-            <div className="px-3 py-1 bg-danger/10 text-danger rounded-full text-xs font-bold">
+            {/* <div className="px-3 py-1 bg-danger/10 text-danger rounded-full text-xs font-bold">
               450 Poin
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
