@@ -1,20 +1,41 @@
 import { useState } from "react";
 import { Button, Input, Card, CardBody, Link } from "@heroui/react";
-import { Phone, User, Car, ArrowLeft, UserPlus } from "lucide-react";
+import { Phone, User, ArrowLeft, UserPlus, Lock, Mail } from "lucide-react";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 import GuestGuard from "@/guard/guest-guard";
+import InputPassword from "@/components/forms/input-password";
+import { http } from "@/utils/libs/axios";
+import { notifyError } from "@/utils/helpers/notify";
 
 export default function MemberRegister() {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
-    carModel: "",
+    password: "",
+    email: "",
   });
+  const navigate = useNavigate();
 
   const handleRegister = (e: any) => {
     e.preventDefault();
     console.log("Data Registrasi:", formData);
     // Tambahkan logika pendaftaran di sini
+
+    http
+      .post("/auth/register", formData)
+      .then(({ data }) => {
+        Cookies.set("token", data.access_token, {
+          expires: 1,
+          path: "/",
+          sameSite: "strict",
+        });
+        navigate("/dashboard");
+      })
+      .catch((err) => notifyError(err))
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -65,10 +86,7 @@ export default function MemberRegister() {
             <form className="flex flex-col gap-5" onSubmit={handleRegister}>
               <Input
                 classNames={{
-                  label:
-                    "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
-                  inputWrapper:
-                    "h-14 border-2 group-data-[focus=true]:border-danger bg-white",
+                  inputWrapper: " bg-white",
                 }}
                 label="Nama Lengkap"
                 labelPlacement="outside"
@@ -79,13 +97,23 @@ export default function MemberRegister() {
                 variant="bordered"
                 onValueChange={(v) => setFormData({ ...formData, fullName: v })}
               />
+              <Input
+                classNames={{
+                  inputWrapper: " bg-white",
+                }}
+                label="Email"
+                labelPlacement="outside"
+                placeholder="Masukkan email aktif"
+                radius="none"
+                startContent={<Mail className="text-gray-400 mr-2" size={20} />}
+                value={formData.email}
+                variant="bordered"
+                onValueChange={(v) => setFormData({ ...formData, email: v })}
+              />
 
               <Input
                 classNames={{
-                  label:
-                    "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
-                  inputWrapper:
-                    "h-14 border-2 group-data-[focus=true]:border-danger bg-white",
+                  inputWrapper: " bg-white",
                 }}
                 label="Nomor WhatsApp"
                 labelPlacement="outside"
@@ -99,30 +127,29 @@ export default function MemberRegister() {
                 variant="bordered"
                 onValueChange={(v) => setFormData({ ...formData, phone: v })}
               />
-
-              <Input
+              <InputPassword
                 classNames={{
-                  label:
-                    "font-bold text-[#0B1C39] uppercase tracking-wider text-xs",
-                  inputWrapper:
-                    "h-14 border-2 group-data-[focus=true]:border-danger bg-white",
+                  inputWrapper: " bg-white",
+                  label: "text-gray-800",
                 }}
-                label="Tipe Mobil Honda"
+                label="Password"
                 labelPlacement="outside"
-                placeholder="Contoh: Civic RS 2023"
+                placeholder="********"
                 radius="none"
-                startContent={<Car className="text-gray-400 mr-2" size={20} />}
-                value={formData.carModel}
+                startContent={<Lock className="text-gray-400 mr-2" size={20} />}
+                type="tel"
+                value={formData.password}
                 variant="bordered"
-                onValueChange={(v) => setFormData({ ...formData, carModel: v })}
+                onValueChange={(v) => setFormData({ ...formData, password: v })}
               />
 
               <div className="pt-2">
                 <Button
-                  className="w-full bg-danger text-white font-black py-7 text-lg uppercase tracking-widest hover:bg-[#0B1C39] transition-all group"
+                  className="w-full bg-danger text-white font-black py-7 rounded-md text-lg uppercase hover:bg-[#0B1C39] transition-all group"
                   endContent={
                     <UserPlus className="group-hover:scale-110 transition-transform" />
                   }
+                  isLoading={loading}
                   radius="none"
                   type="submit"
                 >

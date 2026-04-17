@@ -39,7 +39,6 @@ export default function MemberLogin() {
     http
       .post("/auth/login/customer", data)
       .then(({ data }) => {
-        console.log("DATA", data);
         Cookies.set("token", data.access_token, {
           expires: 1,
           path: "/",
@@ -191,12 +190,12 @@ export default function MemberLogin() {
             {/* Footer Login */}
             <div className="mt-10 flex flex-col gap-4 items-center border-t border-gray-100 pt-8">
               <p className="text-sm text-gray-600">
-                Masuk menggunakan wa code?{" "}
+                Belum Punya Akun ?{" "}
                 <Link
                   className="text-danger font-bold hover:underline cursor-pointer"
-                  href="/login/phone"
+                  href="/register"
                 >
-                  Masuk Sekarang
+                  Buat Akun Sekarang
                 </Link>
               </p>
               <Link
