@@ -222,7 +222,7 @@ export default function MemberHistoryPage() {
                             `/invoices/${item.id}`,
                             item.trx_no,
                             false,
-                            () => setPrintLoading(item.id),
+                            (val) => setPrintLoading(val ? item.id : 0),
                           )
                         }
                       >
