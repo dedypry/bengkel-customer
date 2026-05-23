@@ -104,8 +104,8 @@ export default function Footer() {
           <div>
             <h3 className="text-2xl font-bold mb-6">Newsletter</h3>
             <p className="text-gray-300 mb-6 leading-relaxed">
-              Dapatkan info promo servis dan tips perawatan mobil langsung di
-              email Anda.
+              Dapatkan info promo servis, reminder perawatan, dan tips kendaraan
+              langsung ke email Anda.
             </p>
             <div className="flex max-w-sm border-2 border-white bg-white p-1">
               <Input
@@ -122,7 +122,7 @@ export default function Footer() {
                 className="bg-danger text-white font-bold h-12 px-6"
                 radius="none"
               >
-                SIGNUP
+                Daftar
               </Button>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Footer() {
               className="hover:text-white border-l border-gray-600 pl-6"
               href="#"
             >
-              FQAs
+              FAQ
             </Link>
           </div>
         </div>

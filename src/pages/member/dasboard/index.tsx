@@ -4,15 +4,12 @@ import {
   Calendar,
   ClipboardList,
   ArrowRight,
-  Bot,
-  ChevronRight,
+  Sparkles,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import dayjs from "dayjs";
 
 import BookingModal from "../service/booking";
-
-import QuestionAI from "./question";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { getDashboard } from "@/stores/features/dashboard/dashboard-action";
@@ -21,21 +18,22 @@ import { formatNumber } from "@/utils/helpers/format";
 export default function DashboardPage() {
   const { dashboard } = useAppSelector((state) => state.dashboard);
   const [bookingAdd, setBookingAdd] = useState(false);
-  const [question, setQuestion] = useState(false);
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     dispatch(getDashboard());
-  }, []);
+  }, [dispatch]);
 
-  console.log(question);
+  const totalHistory = useMemo(
+    () => dashboard?.recentActivities?.length || 0,
+    [dashboard?.recentActivities],
+  );
 
   return (
     <div className="flex flex-col gap-6">
       <BookingModal isOpen={bookingAdd} setOpen={setBookingAdd} />
-      <QuestionAI isOpen={question} setOpen={setQuestion} />
-      {/* 1. Header Ringkasan (Stats) */}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="bg-danger text-white">
           <CardBody className="flex flex-row items-center gap-4">
@@ -69,46 +67,22 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
 
-        <Card
-          isPressable
-          className="cursor-pointer hover:bg-secondary-50 transition-colors border-none shadow-sm bg-gradient-to-br from-indigo-50 to-white"
-          onPress={() => setQuestion(true)}
-        >
+        <Card className="bg-[#0B1C39] text-white">
           <CardBody className="flex flex-row items-center gap-4">
-            <div className="p-3 bg-primary rounded-lg text-white shadow-md shadow-indigo-200">
-              <Bot size={24} /> {/* Pastikan import Bot dari lucide-react */}
+            <div className="p-3 bg-white/20 rounded-lg">
+              <Sparkles size={24} />
             </div>
             <div className="flex-1">
-              <p className="text-xs uppercase text-primary font-bold">
-                Tanya AI
+              <p className="text-xs uppercase opacity-80 font-bold">
+                Riwayat Tercatat
               </p>
-              <h3 className="text-sm font-bold text-[#0B1C39] leading-tight">
-                Konsultasi Keluhan
-              </h3>
-            </div>
-            <div className="text-indigo-300">
-              <ChevronRight size={18} />
+              <h3 className="text-2xl font-black">{formatNumber(totalHistory)}</h3>
             </div>
           </CardBody>
         </Card>
-
-        {/* <Card>
-          <CardBody className="flex flex-row items-center gap-4">
-            <div className="p-3 bg-default-100 rounded-lg text-primary">
-              <ClipboardList size={24} />
-            </div>
-            <div>
-              <p className="text-xs uppercase text-default-500 font-bold">
-                Poin Member
-              </p>
-              <h3 className="text-2xl font-black text-[#0B1C39]">450</h3>
-            </div>
-          </CardBody>
-        </Card> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* 2. Status Progress Service (Current Work) */}
         <Card className="lg:col-span-2">
           <CardBody className="p-6">
             <div className="flex justify-between items-center mb-6">
@@ -162,8 +136,7 @@ export default function DashboardPage() {
           </CardBody>
         </Card>
 
-        {/* 3. Promo atau Aksi Cepat */}
-        <Card className="bg-[#0B1C39] text-white overflow-hidden relative">
+        <Card className="bg-gradient-to-b from-[#0B1C39] to-[#122b53] text-white overflow-hidden relative">
           <CardBody className="p-6 flex flex-col justify-center gap-3">
             <h4 className="font-bold text-xl">Butuh Service Berkala?</h4>
             <p className="text-sm opacity-80">
@@ -181,7 +154,6 @@ export default function DashboardPage() {
         </Card>
       </div>
 
-      {/* 4. Riwayat Terakhir */}
       <Card>
         <CardBody className="p-6">
           <h4 className="font-bold text-lg text-[#0B1C39] mb-4">
@@ -190,7 +162,6 @@ export default function DashboardPage() {
           <div className="space-y-4">
             {dashboard?.recentActivities &&
             dashboard.recentActivities.length > 0 ? (
-              // TAMPILAN JIKA ADA DATA
               dashboard.recentActivities.map((item) => (
                 <div
                   key={item.id}
@@ -208,13 +179,12 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                  <Button color="primary" size="sm" variant="light">
+                  <Button color="danger" size="sm" variant="light">
                     Detail
                   </Button>
                 </div>
               ))
             ) : (
-              // TAMPILAN JIKA TIDAK ADA AKTIVITAS (Empty State)
               <div className="flex flex-col items-center justify-center py-10 text-center">
                 <div className="w-16 h-16 bg-default-50 rounded-full flex items-center justify-center mb-3">
                   <ClipboardList className="text-default-300" size={32} />

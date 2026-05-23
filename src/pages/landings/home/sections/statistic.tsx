@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import { Check, Users, UserCheck, Car } from "lucide-react";
 
 export function StatisticsSection() {
@@ -5,17 +6,22 @@ export function StatisticsSection() {
     {
       id: 1,
       label: "Tahun Pengalaman",
-      value: "15",
+      value: "15+",
       icon: <Check size={32} />,
     },
-    { id: 2, label: "Teknisi Ahli", value: "25", icon: <Users size={32} /> },
+    { id: 2, label: "Teknisi Ahli", value: "25+", icon: <Users size={32} /> },
     {
       id: 3,
       label: "Pelanggan Puas",
-      value: "1234",
+      value: "1.200+",
       icon: <UserCheck size={32} />,
     },
-    { id: 4, label: "Proyek Selesai", value: "2000", icon: <Car size={32} /> },
+    {
+      id: 4,
+      label: "Unit Ditangani",
+      value: "2.000+",
+      icon: <Car size={32} />,
+    },
   ];
 
   return (
@@ -31,6 +37,15 @@ export function StatisticsSection() {
       </div>
 
       <div className="relative container mx-auto px-6">
+        <div className="text-center mb-12 text-white max-w-2xl mx-auto">
+          <p className="font-bold tracking-[0.2em] uppercase text-danger mb-2">
+            // Rekam Jejak Kami //
+          </p>
+          <h3 className="text-3xl md:text-4xl font-black leading-tight">
+            Dipercaya Banyak Pelanggan untuk Servis Harian Hingga Perbaikan
+            Besar
+          </h3>
+        </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {stats.map((s) => (
             <div

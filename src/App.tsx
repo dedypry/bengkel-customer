@@ -12,6 +12,7 @@ import MemberProfilePage from "./pages/member/profile";
 import MemberHistoryPage from "./pages/member/history";
 import ForgotPassword from "./pages/member/auth/forgot-password";
 import ResetPassword from "./pages/member/auth/reset-password";
+import ServicesPage from "./pages/landings/services";
 
 import LandingPage from "@/pages/landings/home/index";
 
@@ -26,6 +27,7 @@ function App() {
 
       <Route element={<LadingLayout />}>
         <Route element={<LandingPage />} path="/" />
+        <Route element={<ServicesPage />} path="/layanan" />
         <Route element={<LayoutDashboard />}>
           <Route element={<DashboardPage />} path="/dashboard" />
           <Route path="/customer">

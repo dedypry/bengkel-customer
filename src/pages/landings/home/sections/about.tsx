@@ -1,32 +1,33 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { Button } from "@heroui/react";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import { profile } from "@/configs/profile";
 
 export function AboutSection() {
+  const navigate = useNavigate();
+
   const points = [
     {
       id: "01",
-      title: "Profesional & Berpengalaman",
-      desc: "Setiap mekanik kami memiliki sertifikasi resmi untuk menangani berbagai brand mobil.",
+      title: "Teknisi Andal, Penjelasan Mudah Dipahami",
+      desc: "Kami tidak hanya memperbaiki, tetapi juga menjelaskan kondisi mobil Anda dengan bahasa yang jelas.",
     },
     {
       id: "02",
-      title: "Pusat Servis Berkualitas",
-      desc: "Fasilitas bengkel lengkap dengan alat scan komputer presisi untuk diagnosa akurat.",
+      title: "Diagnosa Presisi dengan Alat Modern",
+      desc: "Pengecekan menyeluruh memakai scanner dan peralatan terkini agar akar masalah cepat ditemukan.",
     },
     {
       id: "03",
-      title: "Teknisi Pemenang Penghargaan",
-      desc: "Tim kami terdiri dari teknisi ahli yang berdedikasi tinggi terhadap kepuasan pelanggan.",
+      title: "Fokus Pada Solusi yang Tepat",
+      desc: "Rekomendasi servis disusun sesuai kebutuhan mobil, bukan sekadar ganti komponen.",
     },
   ];
 
   return (
     <section className="py-20 px-6 container mx-auto" id="about">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        {/* Sisi Kiri: Gambar dengan Badge Pengalaman */}
         <div className="relative group">
           <div className="overflow-hidden shadow-2xl">
             <img
@@ -35,7 +36,6 @@ export function AboutSection() {
               src="/pradana-1.jpg"
             />
           </div>
-          {/* Badge Pengalaman */}
           <div className="absolute top-0 right-0 bg-danger/90 p-8 backdrop-blur-sm">
             <h2 className="text-white text-6xl font-black italic">15</h2>
             <p className="text-white font-bold text-xl uppercase leading-tight">
@@ -44,25 +44,28 @@ export function AboutSection() {
           </div>
         </div>
 
-        {/* Sisi Kanan: Konten Teks */}
         <div className="flex flex-col gap-6">
           <div className="flex items-center gap-2 text-danger font-bold tracking-widest uppercase">
-            <span>// TENTANG KAMI //</span>
+            <span>// Kenapa Pilih Kami //</span>
           </div>
 
           <h2 className="text-4xl md:text-5xl font-extrabold text-[#0B1C39] leading-tight">
-            <span className="text-danger">{profile.company}</span> Tempat
-            Terbaik Untuk Perawatan Mobil Anda
+            <span className="text-danger">{profile.company}</span>, Partner
+            Perawatan Mobil Keluarga Anda
           </h2>
 
           <p className="text-gray-600 text-lg leading-relaxed">
-            Kami hadir memberikan solusi perawatan kendaraan yang transparan dan
-            terpercaya. Mulai dari ganti oli rutin hingga perbaikan mesin berat,
-            kami menggunakan suku cadang asli dan peralatan modern untuk
-            memastikan performa mobil Anda tetap prima.
+            Kami hadir untuk membantu Anda merawat kendaraan tanpa ribet.
+            Layanan kami dirancang agar proses servis terasa lebih nyaman, cepat,
+            dan transparan dari awal hingga selesai.
           </p>
 
-          {/* List Poin 01, 02, 03 */}
+          <p className="text-gray-500 leading-relaxed">
+            Mulai dari servis berkala, pengecekan sistem kelistrikan, sampai
+            perbaikan mesin, setiap pekerjaan ditangani tim berpengalaman dengan
+            standar pengerjaan yang konsisten.
+          </p>
+
           <div className="flex flex-col gap-6 my-4">
             {points.map((p) => (
               <div key={p.id} className="flex gap-5 items-start group">
@@ -85,8 +88,9 @@ export function AboutSection() {
             endContent={
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             }
+            onPress={() => navigate("/layanan")}
           >
-            SELENGKAPNYA
+            Lihat Layanan Utama
           </Button>
         </div>
       </div>

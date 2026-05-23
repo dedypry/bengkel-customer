@@ -108,7 +108,7 @@ export default function NavbarCustom() {
   }, []);
 
   const menuItems = [
-    { name: "Home", id: "home" },
+    { name: "Beranda", id: "home" },
     { name: "Tentang Kami", id: "about" },
     { name: "Layanan", id: "service" },
     { name: "Booking", id: "booking" },
@@ -129,7 +129,7 @@ export default function NavbarCustom() {
           <div className="flex gap-2 items-center border-l border-gray-300 pl-8">
             <Clock className="text-danger" size={16} />
             <p className="text-sm font-medium text-gray-600">
-              Senin - Minggu : 08.30 - 17.00
+              Buka Setiap Hari : 08.30 - 17.00
             </p>
           </div>
         </div>
@@ -214,7 +214,7 @@ export default function NavbarCustom() {
               onClick={() => navigate(user ? "/dashboard" : "/login")}
             >
               <p className="font-black text-lg text-white uppercase tracking-widest flex items-center gap-2">
-                {user ? "Dashboard" : "Join Member"}
+                {user ? "Dashboard" : "Masuk Member"}
                 <span className="group-hover:translate-x-1 transition-transform">
                   →
                 </span>

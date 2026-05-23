@@ -27,18 +27,27 @@ export function BookingSection() {
   const { brands } = useAppSelector((state) => state.brands);
   const dispatch = useAppDispatch();
   const [isLoading, setLoading] = useState(false);
+  const defaultBookingValues: BookingFormValuesLanding = {
+    name: "",
+    email: "",
+    phone: "",
+    branch_id: "",
+    booking_date: dayjs().add(1, "day").toISOString(),
+    booking_time: "08:00",
+    service_type: "",
+    vehicle_type: "",
+    plate_number: "",
+    complaint: "",
+  };
 
   useEffect(() => {
     dispatch(getBrand());
-  }, []);
+  }, [dispatch]);
 
   const { control, handleSubmit, reset } = useForm<BookingFormValuesLanding>({
     resolver: zodResolver(bookingSchemaLanding),
     mode: "onChange",
-    defaultValues: {
-      booking_time: "08:00",
-      booking_date: dayjs().add(1, "day").toISOString(),
-    },
+    defaultValues: defaultBookingValues,
   });
 
   function onSubmit(data: BookingFormValuesLanding) {
@@ -47,7 +56,7 @@ export function BookingSection() {
       .post("/bookings/landing", data)
       .then(({ data }) => {
         notify(data.message);
-        reset();
+        reset(defaultBookingValues);
       })
       .catch((err) => notifyError(err))
       .finally(() => {
@@ -75,20 +84,25 @@ export function BookingSection() {
 
         {/* Konten Teks */}
         <div className="relative z-10">
+          <p className="font-bold tracking-[0.2em] uppercase text-danger mb-3">
+            // Booking Online //
+          </p>
           <h2 className="text-4xl md:text-5xl font-black mb-6 leading-tight">
-            Penyedia Layanan Perbaikan Mobil Bersertifikat dan Terpercaya
+            Booking Servis Lebih Cepat, Datang Tinggal Ditangani
           </h2>
           <p className="text-lg text-gray-300 leading-relaxed max-w-xl">
-            Kami menjamin setiap pengerjaan dilakukan sesuai standar operasional
-            yang ketat. Gunakan formulir di samping untuk menjadwalkan kunjungan
-            Anda tanpa harus mengantri lama di bengkel kami.
+            Pilih jadwal yang paling pas untuk Anda. Tim kami akan menyiapkan
+            slot kedatangan agar proses servis lebih efisien dan waktu tunggu
+            lebih singkat.
           </p>
         </div>
       </div>
 
       {/* Sisi Kanan: Form Booking (Background Merah) */}
       <div className="w-full md:w-1/2 bg-danger p-12 lg:p-20 flex flex-col justify-center">
-        <h3 className="text-white text-4xl font-black mb-8">Booking Layanan</h3>
+        <h3 className="text-white text-4xl font-black mb-8">
+          Form Booking Servis
+        </h3>
 
         <form
           className="grid grid-cols-1 sm:grid-cols-2 gap-4"
@@ -102,7 +116,7 @@ export function BookingSection() {
                 isInvalid={!!fieldState.error}
                 label="Cabang"
                 placeholder="Pilih Cabang Terdekat"
-                selectedKeys={[field.value]}
+                selectedKeys={field.value ? [field.value] : []}
                 startContent={
                   <Building className="text-default-400" size={18} />
                 }
@@ -142,7 +156,7 @@ export function BookingSection() {
                 {...field}
                 isInvalid={!!fieldState.error}
                 label="Nama"
-                placeholder="Nama Anda"
+                placeholder="Contoh: Budi Santoso"
                 variant="flat"
               />
             )}
@@ -155,7 +169,7 @@ export function BookingSection() {
                 {...field}
                 isInvalid={!!fieldState.error}
                 label="No. Whatsapp"
-                placeholder="Nomor Whatsapp"
+                placeholder="Contoh: 0812xxxxxxx"
                 variant="flat"
               />
             )}
@@ -168,7 +182,7 @@ export function BookingSection() {
                 {...field}
                 isInvalid={!!fieldState.error}
                 label="Email"
-                placeholder="Email Anda"
+                placeholder="Contoh: budi@email.com"
                 variant="flat"
               />
             )}
@@ -181,7 +195,7 @@ export function BookingSection() {
                 isInvalid={!!fieldState.error}
                 label="Jenis Layanan"
                 placeholder="Pilih Layanan"
-                selectedKeys={[field.value]}
+                selectedKeys={field.value ? [field.value] : []}
                 variant="flat"
                 onSelectionChange={(key) => {
                   const val = Array.from(key)[0];
@@ -220,9 +234,14 @@ export function BookingSection() {
                 isInvalid={!!fieldState.error}
                 label="Jam"
                 placeholder="Pilih Slot"
-                selectedKeys={[field.value]}
+                selectedKeys={field.value ? [field.value] : []}
                 startContent={<Clock className="text-default-400" size={18} />}
                 variant="flat"
+                onSelectionChange={(key) => {
+                  const val = Array.from(key)[0];
+
+                  field.onChange(val);
+                }}
               >
                 {profile.times.map((time) => (
                   <SelectItem key={time} textValue={time}>
@@ -240,7 +259,7 @@ export function BookingSection() {
                 {...field}
                 isInvalid={!!fieldState.error}
                 label="Jenis Kendaraan"
-                placeholder="ex: Honda BRV"
+                placeholder="Contoh: Honda BRV"
                 variant="flat"
               />
             )}
@@ -253,7 +272,7 @@ export function BookingSection() {
                 {...field}
                 isInvalid={!!fieldState.error}
                 label="Plat No. Kendaraan"
-                placeholder="ex: B1234HH"
+                placeholder="Contoh: B1234XYZ"
                 variant="flat"
               />
             )}
@@ -278,7 +297,7 @@ export function BookingSection() {
             isLoading={isLoading}
             type="submit"
           >
-            PESAN SEKARANG
+            Kirim Booking Sekarang
           </Button>
         </form>
       </div>

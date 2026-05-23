@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { Button } from "@heroui/react";
 import {
   ArrowRight,
@@ -8,14 +7,30 @@ import {
   Wrench,
   Droplets,
 } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { landingServices } from "../../services/data";
 
 export function ServicesExplore() {
-  const serviceList = [
-    { id: "diag", title: "Diagnostic Test", icon: <Car />, active: true },
-    { id: "eng", title: "Engine Servicing", icon: <Settings />, active: false },
-    { id: "tire", title: "Tires Replacement", icon: <Wrench />, active: false },
-    { id: "oil", title: "Oil Changing", icon: <Droplets />, active: false },
-  ];
+  const navigate = useNavigate();
+  const [activeId, setActiveId] = useState(landingServices[0].id);
+  const iconMap = {
+    diag: <Car />,
+    eng: <Settings />,
+    tire: <Wrench />,
+    oil: <Droplets />,
+  };
+
+  const serviceList = landingServices.map((service) => ({
+    ...service,
+    icon: iconMap[service.id as keyof typeof iconMap],
+  }));
+
+  const activeService = useMemo(
+    () => serviceList.find((item) => item.id === activeId) || serviceList[0],
+    [activeId],
+  );
 
   return (
     <section className="py-24 container mx-auto px-6" id="service">
@@ -29,16 +44,16 @@ export function ServicesExplore() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Kolom Kiri: Vertical Tabs */}
         <div className="lg:col-span-3 flex flex-col gap-2">
           {serviceList.map((item) => (
             <div
               key={item.id}
               className={`flex items-center gap-4 p-6 cursor-pointer transition-all font-bold text-lg ${
-                item.active
+                item.id === activeId
                   ? "bg-danger text-white"
                   : "bg-gray-100 text-[#0B1C39] hover:bg-gray-200"
               }`}
+              onClick={() => setActiveId(item.id)}
             >
               {item.icon}
               {item.title}
@@ -46,38 +61,32 @@ export function ServicesExplore() {
           ))}
         </div>
 
-        {/* Kolom Tengah: Gambar */}
         <div className="lg:col-span-5 h-[450px]">
           <img
             alt="Service Detail"
             className="w-full h-full object-cover shadow-xl"
-            src="/pradana-4.jpg"
+            src={activeService.image}
           />
         </div>
 
-        {/* Kolom Kanan: Deskripsi Detail */}
         <div className="lg:col-span-4 flex flex-col gap-6 pl-0 lg:pl-6">
           <h3 className="text-3xl font-black text-[#0B1C39]">
-            15 Tahun Pengalaman Dalam Servis Otomotif
+            {activeService.heading}
           </h3>
           <p className="text-gray-600 leading-relaxed text-lg">
-            Kami menyediakan layanan diagnosa menyeluruh menggunakan alat
-            pemindai terbaru untuk memastikan setiap sensor dan komponen
-            elektronik mobil Anda bekerja sempurna.
+            {activeService.description}
           </p>
 
           <ul className="flex flex-col gap-4">
-            {["Layanan Berkualitas", "Teknisi Ahli", "Peralatan Modern"].map(
-              (point, idx) => (
-                <li
-                  key={idx}
-                  className="flex items-center gap-3 font-bold text-[#0B1C39]"
-                >
-                  <CheckCircle2 className="text-success" size={24} />
-                  {point}
-                </li>
-              ),
-            )}
+            {activeService.points.map((point) => (
+              <li
+                key={point}
+                className="flex items-center gap-3 font-bold text-[#0B1C39]"
+              >
+                <CheckCircle2 className="text-success" size={24} />
+                {point}
+              </li>
+            ))}
           </ul>
 
           <Button
@@ -86,8 +95,9 @@ export function ServicesExplore() {
             endContent={
               <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             }
+            onPress={() => navigate(`/layanan?service=${activeService.id}`)}
           >
-            BACA SELENGKAPNYA
+            Pilih Layanan Ini
           </Button>
         </div>
       </div>

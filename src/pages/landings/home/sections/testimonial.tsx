@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { User } from "@heroui/react";
 import { Quote } from "lucide-react";
 
@@ -7,19 +6,19 @@ export function TestimonialSection() {
     {
       name: "Budi Santoso",
       role: "Pemilik Toyota Camry",
-      text: "Pelayanan sangat cepat dan transparan. Mekanik menjelaskan detail kerusakan dengan jelas sebelum mulai bekerja. Sangat puas dengan hasilnya!",
+      text: "Saya suka karena semua dijelaskan dari awal. Estimasi biaya jelas, pengerjaan rapi, dan mobil terasa jauh lebih nyaman dipakai.",
       image: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
     },
     {
       name: "Siska Putri",
       role: "Pemilik Honda CR-V",
-      text: "Bengkel paling terpercaya di kota ini. Ruang tunggu nyaman, dan mobil saya terasa seperti baru kembali setelah servis besar di sini.",
+      text: "Booking online-nya praktis banget. Datang sesuai jadwal, langsung ditangani, dan update progresnya juga komunikatif.",
       image: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
     },
     {
       name: "Andi Wijaya",
       role: "Pemilik Mitsubishi Pajero",
-      text: "Sistem booking online-nya sangat membantu. Tidak perlu antre lama, datang langsung dikerjakan. Harga juga sangat kompetitif.",
+      text: "Saya sudah beberapa kali servis di sini. Kualitas konsisten, teknisinya ramah, dan rekomendasinya selalu masuk akal.",
       image: "https://i.pravatar.cc/150?u=a04258114e29026702d",
     },
   ];
@@ -27,17 +26,19 @@ export function TestimonialSection() {
   return (
     <section className="py-24 bg-gray-50 overflow-hidden">
       <div className="container mx-auto px-6">
-        {/* Header Section */}
         <div className="text-center mb-16">
           <p className="text-danger font-bold tracking-[0.2em] uppercase mb-2">
             // TESTIMONI //
           </p>
           <h2 className="text-4xl md:text-5xl font-black text-[#0B1C39]">
-            Apa Kata Pelanggan Kami!
+            Cerita Nyata dari Pelanggan Kami
           </h2>
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            Kepuasan pelanggan adalah prioritas utama kami, dari komunikasi
+            awal hingga kendaraan kembali siap digunakan.
+          </p>
         </div>
 
-        {/* Testimonial Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {testimonials.map((t, i) => (
             <div

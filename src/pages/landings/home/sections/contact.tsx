@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
@@ -24,25 +23,27 @@ export default function ContactSection() {
     {
       icon: <Clock className="text-danger" size={24} />,
       title: "Jam Operasional",
-      detail: "Senin - minggu: 08.30 - 17.00",
+      detail: "Senin - Minggu: 08.30 - 17.00",
     },
   ];
 
   return (
     <section className="py-24 bg-white" id="contact">
       <div className="container mx-auto px-6">
-        {/* Header Section */}
         <div className="text-center mb-16">
           <p className="text-danger font-bold tracking-[0.2em] uppercase mb-2">
             // HUBUNGI KAMI //
           </p>
           <h2 className="text-4xl md:text-5xl font-black text-[#0B1C39]">
-            Ada Pertanyaan? Hubungi Kami Sekarang
+            Butuh Bantuan? Tim Kami Siap Membantu
           </h2>
+          <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
+            Konsultasi servis, cek jadwal, atau tanya estimasi biaya awal.
+            Hubungi kami lewat channel yang paling nyaman untuk Anda.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Kolom Kiri: Info & Map */}
           <div className="flex flex-col gap-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {contactInfo.map((info, index) => (
