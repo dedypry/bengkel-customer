@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies and build
         run: |
           echo "VITE_NODE_ENV=production" >> .env
-          pnpm install
+          pnpm install --config.strict-dep-builds=false
           pnpm lint
           pnpm build
 
