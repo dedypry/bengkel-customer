@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable jsx-a11y/iframe-has-title */
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 

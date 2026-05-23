@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import { User } from "@heroui/react";
 import { Quote } from "lucide-react";
 
