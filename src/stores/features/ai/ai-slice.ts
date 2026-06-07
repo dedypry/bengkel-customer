@@ -14,7 +14,7 @@ const aiSlice = createSlice({
     chats: [
       {
         isMe: false,
-        msg: `Halo! Saya asisten AI bengkel. Ada kendala apa dengan mobil Anda hari ini? Misalnya: "Kenapa rem saya bunyi mencit?" atau "Kapan harus ganti oli?"`,
+        msg: `Halo! Saya asisten AI bengkel. Silakan tanya profil bengkel, layanan, produk/sparepart, harga, atau estimasi biaya. Jika ingin dibantu admin langsung, klik tombol WhatsApp.`,
       },
     ] as IChat[],
   },

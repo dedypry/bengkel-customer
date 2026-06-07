@@ -1,8 +1,9 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ScrollShadow, Avatar, Input, Button } from "@heroui/react";
-import { Bot, User, SendHorizonal } from "lucide-react";
+import { Bot, User, SendHorizonal, PhoneCall } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 
+import { profile } from "@/configs/profile";
 import { postQuestion } from "@/stores/features/ai/ai-action";
 import { setChat } from "@/stores/features/ai/ai-slice";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
@@ -12,24 +13,75 @@ export default function ChatBoot() {
   const [msg, setMsg] = useState("");
 
   const dispatch = useAppDispatch();
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const waLink = `https://wa.me/${profile.phone}?text=${encodeURIComponent(
+    "Halo Admin, saya ingin bertanya tentang layanan dan estimasi harga bengkel.",
+  )}`;
 
   const scrollToBottom = () => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollRef.current;
+
+    if (!el) return;
+
+    el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   };
 
-  function sendMsg() {
-    dispatch(postQuestion(msg));
-    dispatch(setChat(msg));
-    setMsg("");
-    const timeout = setTimeout(scrollToBottom, 100);
+  useEffect(() => {
+    scrollToBottom();
+  }, [chats, chatLoading]);
 
-    return () => clearTimeout(timeout);
+  function sendMsg(message = msg) {
+    const trimmedMessage = message.trim();
+
+    if (!trimmedMessage || chatLoading) return;
+
+    dispatch(postQuestion(trimmedMessage));
+    dispatch(setChat(trimmedMessage));
+    setMsg("");
   }
 
   return (
-    <>
-      <ScrollShadow className="flex-1 overflow-y-auto h-[500px] pb-10">
+    <div className="flex h-full flex-col">
+      <div className="mb-3 flex items-start justify-between gap-3 shrink-0">
+        <div>
+          <p className="font-bold text-base">Chatbot Bengkel</p>
+          <p className="text-xs text-default-500">
+            Tanya profil bengkel, layanan, produk, harga, dan estimasi.
+          </p>
+        </div>
+        <a
+          className="inline-flex items-center gap-1 rounded-full bg-success px-3 py-2 text-xs font-semibold text-white"
+          href={waLink}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <PhoneCall size={14} />
+          WhatsApp
+        </a>
+      </div>
+
+      <div className="mb-3 flex flex-wrap gap-2 shrink-0">
+        {[
+          "Berapa harga ganti oli?",
+          "Apa saja layanan yang tersedia?",
+          "Estimasi servis kaki-kaki berapa?",
+        ].map((question) => (
+          <Button
+            key={question}
+            className="text-xs"
+            size="sm"
+            variant="flat"
+            onPress={() => sendMsg(question)}
+          >
+            {question}
+          </Button>
+        ))}
+      </div>
+
+      <ScrollShadow
+        ref={scrollRef}
+        className="flex-1 min-h-0 overflow-y-auto pr-1"
+      >
         {chats.map((item, i) => {
           if (!item.isMe) {
             return (
@@ -38,8 +90,19 @@ export default function ChatBoot() {
                   className="bg-cyan-100 text-cyan-600 shrink-0"
                   icon={<Bot size={20} />}
                 />
-                <div className="bg-default-100 p-3 rounded-2xl rounded-tl-none text-sm max-w-[80%]">
-                  <ReactMarkdown>{item.msg}</ReactMarkdown>
+                <div className="flex flex-col items-start gap-2 max-w-[80%]">
+                  <div className="bg-default-100 p-3 rounded-2xl rounded-tl-none text-sm">
+                    <ReactMarkdown>{item.msg}</ReactMarkdown>
+                  </div>
+                  <a
+                    className="inline-flex items-center gap-1 rounded-full bg-success px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                    href={waLink}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <PhoneCall size={14} />
+                    Hubungi Admin
+                  </a>
                 </div>
               </div>
             );
@@ -71,30 +134,31 @@ export default function ChatBoot() {
             </div>
           </div>
         )}
-
-        <div ref={bottomRef} />
       </ScrollShadow>
-      <div className="absolute bottom-1 right-2 left-2">
+      <div className="shrink-0 pt-2">
         <Input
-          classNames={{
-            input: "resize-y min-h-[100px]",
-          }}
           endContent={
-            <Button isIconOnly variant="light" onPress={sendMsg}>
+            <Button
+              isIconOnly
+              isDisabled={!msg.trim() || chatLoading}
+              variant="light"
+              onPress={() => sendMsg()}
+            >
               <SendHorizonal />
             </Button>
           }
-          placeholder="Ketik keluhan atau pertanyaan Anda di sini..."
+          placeholder="Tanya layanan, harga, produk, atau profil bengkel..."
           value={msg}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault(); // Cegah baris baru
+              e.stopPropagation(); // Cegah Popover ikut menutup
               sendMsg();
             }
           }}
           onValueChange={setMsg}
         />
       </div>
-    </>
+    </div>
   );
 }

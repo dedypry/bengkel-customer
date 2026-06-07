@@ -1,4 +1,5 @@
 export const profile = {
+  companyId: 1,
   company: "Pradana Auto Care",
   short_address: "Jl. Raya Muchtar No.86, Sawangan - Depok",
   address:
