@@ -14,7 +14,6 @@ import {
   Avatar,
 } from "@heroui/react";
 import { CalendarDays, Clock, CarFront, Building } from "lucide-react";
-import { getLocalTimeZone, today } from "@internationalized/date";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
@@ -175,9 +174,7 @@ export default function BookingModal({ isOpen, setOpen }: BookingModalProps) {
                           isInvalid={!!errors.booking_date}
                           label="Tanggal Kedatangan"
                           labelPlacement="outside"
-                          minDate={
-                            today(getLocalTimeZone()).add({ days: 1 }) as any
-                          }
+                          minDate={dayjs().add(1, "day").startOf("day").toDate()}
                           value={field.value as any}
                           variant="bordered"
                           onChange={field.onChange}
