@@ -69,7 +69,13 @@ export default function AddVehicleModal({ isOpen, setOpen, data }: Props) {
 
   return (
     <>
-      <Modal backdrop="blur" isOpen={isOpen} size="3xl" onOpenChange={setOpen}>
+      <Modal
+        backdrop="blur"
+        isOpen={isOpen}
+        scrollBehavior="outside"
+        size="3xl"
+        onOpenChange={setOpen}
+      >
         <ModalContent>
           {(onClose) => (
             <form onSubmit={handleSubmit(onSubmit)}>

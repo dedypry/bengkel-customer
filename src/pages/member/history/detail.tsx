@@ -52,7 +52,7 @@ export default function ServiceDetailModal({
     <Modal
       backdrop="blur"
       isOpen={isOpen}
-      scrollBehavior="inside"
+      scrollBehavior="outside"
       size="3xl"
       onOpenChange={onOpenChange}
     >
