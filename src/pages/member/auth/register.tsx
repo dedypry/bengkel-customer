@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Input, Card, CardBody, Link } from "@heroui/react";
-import { Phone, User, ArrowLeft, UserPlus, Lock, Mail } from "lucide-react";
+import { Button, Card, CardBody, Link } from "@heroui/react";
+import { Phone, User, ArrowLeft, UserPlus, Mail } from "lucide-react";
 import Cookies from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
@@ -8,6 +8,7 @@ import GuestGuard from "@/guard/guest-guard";
 import InputPassword from "@/components/forms/input-password";
 import { http } from "@/utils/libs/axios";
 import { notifyError } from "@/utils/helpers/notify";
+import TextField from "@/components/forms/text-field";
 
 export default function MemberRegister() {
   const [loading, setLoading] = useState(false);
@@ -84,10 +85,7 @@ export default function MemberRegister() {
 
             {/* Form Register */}
             <form className="flex flex-col gap-5" onSubmit={handleRegister}>
-              <Input
-                classNames={{
-                  inputWrapper: " bg-white",
-                }}
+              <TextField
                 label="Nama Lengkap"
                 labelPlacement="outside"
                 placeholder="Masukkan nama sesuai STNK"
@@ -97,10 +95,7 @@ export default function MemberRegister() {
                 variant="bordered"
                 onValueChange={(v) => setFormData({ ...formData, fullName: v })}
               />
-              <Input
-                classNames={{
-                  inputWrapper: " bg-white",
-                }}
+              <TextField
                 label="Email"
                 labelPlacement="outside"
                 placeholder="Masukkan email aktif"
@@ -111,10 +106,7 @@ export default function MemberRegister() {
                 onValueChange={(v) => setFormData({ ...formData, email: v })}
               />
 
-              <Input
-                classNames={{
-                  inputWrapper: " bg-white",
-                }}
+              <TextField
                 label="Nomor WhatsApp"
                 labelPlacement="outside"
                 placeholder="0812xxxxxxx"
@@ -128,18 +120,7 @@ export default function MemberRegister() {
                 onValueChange={(v) => setFormData({ ...formData, phone: v })}
               />
               <InputPassword
-                classNames={{
-                  inputWrapper: " bg-white",
-                  label: "text-gray-800",
-                }}
-                label="Password"
-                labelPlacement="outside"
-                placeholder="********"
-                radius="none"
-                startContent={<Lock className="text-gray-400 mr-2" size={20} />}
-                type="tel"
                 value={formData.password}
-                variant="bordered"
                 onValueChange={(v) => setFormData({ ...formData, password: v })}
               />
 

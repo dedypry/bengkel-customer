@@ -13,6 +13,7 @@ function InputPassword(
       ref={ref}
       classNames={{
         label: "text-gray-800",
+        inputWrapper: " bg-white",
       }}
       color="primary"
       endContent={
@@ -32,7 +33,7 @@ function InputPassword(
       }
       label="Password"
       labelPlacement="outside"
-      placeholder="Masukan password"
+      placeholder="********"
       startContent={
         <LockKeyhole
           className={props.isInvalid ? "text-danger" : "text-secondary-600"}
