@@ -17,6 +17,8 @@ import ServicesPage from "./pages/landings/services";
 import LandingPage from "@/pages/landings/home/index";
 
 function App() {
+  console.log(import.meta.env.VITE_NODE_ENV);
+
   return (
     <Routes>
       <Route element={<MemberLogin />} path="/login" />
