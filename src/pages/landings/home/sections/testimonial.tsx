@@ -35,8 +35,8 @@ export function TestimonialSection() {
             Cerita Nyata dari Pelanggan Kami
           </h2>
           <p className="text-gray-500 mt-4 max-w-2xl mx-auto">
-            Kepuasan pelanggan adalah prioritas utama kami, dari komunikasi
-            awal hingga kendaraan kembali siap digunakan.
+            Kepuasan pelanggan adalah prioritas utama kami, dari komunikasi awal
+            hingga kendaraan kembali siap digunakan.
           </p>
         </div>
 

@@ -41,8 +41,8 @@ export default function CarouselSection() {
 
           <p className="text-white/85 text-base md:text-lg leading-relaxed max-w-xl">
             Servis rutin, pengecekan menyeluruh, sampai perbaikan detail dalam
-            satu tempat. Tim kami bantu jelaskan kondisi mobil dengan bahasa yang
-            mudah dipahami, tanpa biaya tersembunyi.
+            satu tempat. Tim kami bantu jelaskan kondisi mobil dengan bahasa
+            yang mudah dipahami, tanpa biaya tersembunyi.
           </p>
 
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-white/80 text-sm font-semibold">

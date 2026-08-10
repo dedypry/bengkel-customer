@@ -57,8 +57,8 @@ export function AboutSection() {
 
           <p className="text-gray-600 text-lg leading-relaxed">
             Kami hadir untuk membantu Anda merawat kendaraan tanpa ribet.
-            Layanan kami dirancang agar proses servis terasa lebih nyaman, cepat,
-            dan transparan dari awal hingga selesai.
+            Layanan kami dirancang agar proses servis terasa lebih nyaman,
+            cepat, dan transparan dari awal hingga selesai.
           </p>
 
           <p className="text-gray-500 leading-relaxed">

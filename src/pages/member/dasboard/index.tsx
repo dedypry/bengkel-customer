@@ -76,7 +76,9 @@ export default function DashboardPage() {
               <p className="text-xs uppercase opacity-80 font-bold">
                 Riwayat Tercatat
               </p>
-              <h3 className="text-2xl font-black">{formatNumber(totalHistory)}</h3>
+              <h3 className="text-2xl font-black">
+                {formatNumber(totalHistory)}
+              </h3>
             </div>
           </CardBody>
         </Card>
