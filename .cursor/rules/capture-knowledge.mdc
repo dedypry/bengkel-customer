@@ -1,0 +1,20 @@
+---
+description: Catat pengetahuan baru ke .cursor/knowledge; buat rule alwaysApply jika pola berulang
+alwaysApply: true
+---
+
+# Capture Knowledge
+
+## Sebelum task kompleks
+
+1. Baca `.cursor/knowledge/INDEX.md`
+2. Cross-repo: `backend/.cursor/knowledge/INDEX.md`
+
+## Saat pengetahuan baru
+
+1. Append `.cursor/knowledge/{topik}.md`
+2. Backend-related → juga `backend/.cursor/knowledge/`
+3. Update INDEX
+4. Pola berulang → `.cursor/rules/*.mdc` + `alwaysApply: true`
+
+Skill: `capture-knowledge`
